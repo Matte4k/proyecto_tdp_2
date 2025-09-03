@@ -9,16 +9,42 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="fonts\Inter-Italic-VariableFont_opsz,wght.ttf" />
-    <None Remove="fonts\Inter-VariableFont_opsz,wght.ttf" />
+    <None Remove="Fonts\Inter Black.ttf" />
+    <None Remove="Fonts\Inter ExtraBold.ttf" />
+    <None Remove="Fonts\Inter ExtraLight.ttf" />
+    <None Remove="Fonts\Inter Light.ttf" />
+    <None Remove="Fonts\Inter Medium.ttf" />
+    <None Remove="Fonts\Inter SemiBold.ttf" />
+    <None Remove="Fonts\Inter.ttf" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="fonts\Inter-Italic-VariableFont_opsz,wght.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    <Folder Include="Images\" />
+    <Folder Include="MVVM\Model\" />
+    <Folder Include="MVVM\ViewModel\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Fonts\Inter Black.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="fonts\Inter-VariableFont_opsz,wght.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    <Resource Include="Fonts\Inter ExtraBold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Inter ExtraLight.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Inter Light.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Inter Medium.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Inter SemiBold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Inter.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

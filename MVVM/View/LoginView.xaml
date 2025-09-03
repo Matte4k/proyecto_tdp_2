@@ -1,0 +1,37 @@
+﻿<Window x:Class="proyecto_tdp_2.MVVM.View.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:proyecto_tdp_2.MVVM.View"
+        mc:Ignorable="d"
+        Title="MiReclamo" Height="700" Width="500" ResizeMode="CanMinimize">
+
+    <Border BorderBrush="#FFE8E8E8" BorderThickness="3,3,3,3">
+        <Grid Background="#FFFBFAF9">
+
+            <Label Content="MiReclamo" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" FontSize="22" FontWeight="Bold"/>
+            <Label Content="Bienvenido" HorizontalAlignment="Center" Margin="0,74,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" FontSize="18" FontWeight="Bold"/>
+            <Label Content="Inicia sesión o registrate para continuar" HorizontalAlignment="Center" Margin="0,108,0,0" VerticalAlignment="Top" FontSize="14" Foreground="#FF6D6D6D" FontFamily="Inter 18pt 18pt"/>
+
+            <Label Content="Correo electrónico" HorizontalAlignment="Left" Margin="88,201,0,0" VerticalAlignment="Top" FontSize="14" Foreground="Black" FontFamily="Inter 18pt 18pt" Background="{x:Null}"/>
+            <TextBox HorizontalAlignment="Center" Margin="0,235,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" Height="30" VerticalContentAlignment="Center" Cursor="IBeam" FontFamily="Inter 18pt 18pt"/>
+
+            <Label Content="Contraseña" HorizontalAlignment="Left" Margin="88,295,0,0" VerticalAlignment="Top" FontSize="14" Foreground="Black" FontFamily="Inter 18pt 18pt" Background="{x:Null}"/>
+            <TextBox HorizontalAlignment="Center" Margin="0,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" Height="30" VerticalContentAlignment="Center" Cursor="IBeam" FontFamily="Inter 18pt 18pt"/>
+
+            <CheckBox Content="Recordarme" HorizontalAlignment="Left" Margin="88,392,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Inter 18pt 18pt" VerticalContentAlignment="Center"/>
+            <Button Content="¿Olvidaste tu contraseña?" HorizontalAlignment="Left" Margin="245,391,0,0" VerticalAlignment="Top" Foreground="#FF0B99FF" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Hand" FontFamily="Inter 18pt 18pt SemiBold" FontWeight="Bold"/>
+
+            <Button Content="Iniciar Sesión" HorizontalAlignment="Center" Margin="0,480,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" Cursor="Hand" Width="300" Height="40" Background="#FF0B99FF" BorderBrush="{x:Null}" Foreground="White" FontWeight="Bold"/>
+
+            <Rectangle HorizontalAlignment="Left" Height="1" Margin="97,542,0,0" Stroke="#FF9E9E9E" VerticalAlignment="Top" Width="124"/>
+            <Label Content="o" HorizontalAlignment="Center" Margin="0,525,0,0" VerticalAlignment="Top" FontSize="14" Foreground="#FF6D6D6D"/>
+            <Rectangle HorizontalAlignment="Left" Height="1" Margin="273,542,0,0" Stroke="#FF9E9E9E" VerticalAlignment="Top" Width="124"/>
+
+            <Button Content="Registrarse" HorizontalAlignment="Center" Margin="0,569,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" Cursor="Hand" Width="300" Height="40" Background="#FFC0E0FF" BorderBrush="{x:Null}" Foreground="#FF0B99FF" FontWeight="Bold"/>
+
+        </Grid>
+    </Border>
+
+</Window>
