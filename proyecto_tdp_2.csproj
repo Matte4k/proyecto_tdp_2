@@ -16,10 +16,11 @@
     <None Remove="Fonts\Inter Medium.ttf" />
     <None Remove="Fonts\Inter SemiBold.ttf" />
     <None Remove="Fonts\Inter.ttf" />
+    <None Remove="Images\account_circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.png" />
+    <None Remove="Images\account_circle_31dp_000000_FILL0_wght400_GRAD0_opsz24.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Images\" />
     <Folder Include="MVVM\Model\" />
     <Folder Include="MVVM\ViewModel\" />
   </ItemGroup>
@@ -45,6 +46,12 @@
     </Resource>
     <Resource Include="Fonts\Inter.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\account_circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\account_circle_31dp_000000_FILL0_wght400_GRAD0_opsz24.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

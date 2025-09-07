@@ -15,21 +15,13 @@ using System.Windows.Shapes;
 namespace proyecto_tdp_2.MVVM.View
 {
     /// <summary>
-    /// Interaction logic for LoginView.xaml
+    /// Interaction logic for DashboardView.xaml
     /// </summary>
-    public partial class LoginView : Window
+    public partial class DashboardView : Window
     {
-        public LoginView()
+        public DashboardView()
         {
             InitializeComponent();
-        }
-
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
-        {
-            DashboardView home = new DashboardView();
-            home.Show();
-
-            this.Close();
         }
     }
 }

@@ -15,21 +15,21 @@
             <Label Content="Inicia sesión o registrate para continuar" HorizontalAlignment="Center" Margin="0,108,0,0" VerticalAlignment="Top" FontSize="14" Foreground="#FF6D6D6D" FontFamily="Inter 18pt 18pt"/>
 
             <Label Content="Correo electrónico" HorizontalAlignment="Left" Margin="88,201,0,0" VerticalAlignment="Top" FontSize="14" Foreground="Black" FontFamily="Inter 18pt 18pt" Background="{x:Null}"/>
-            <TextBox HorizontalAlignment="Center" Margin="0,235,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" Height="30" VerticalContentAlignment="Center" Cursor="IBeam" FontFamily="Inter 18pt 18pt"/>
+            <TextBox x:Name="tbMail" HorizontalAlignment="Center" Margin="0,235,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" Height="30" VerticalContentAlignment="Center" Cursor="IBeam" FontFamily="Inter 18pt 18pt"/>
 
             <Label Content="Contraseña" HorizontalAlignment="Left" Margin="88,295,0,0" VerticalAlignment="Top" FontSize="14" Foreground="Black" FontFamily="Inter 18pt 18pt" Background="{x:Null}"/>
-            <TextBox HorizontalAlignment="Center" Margin="0,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" Height="30" VerticalContentAlignment="Center" Cursor="IBeam" FontFamily="Inter 18pt 18pt"/>
+            <TextBox x:Name="tbPass" HorizontalAlignment="Center" Margin="0,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310" Height="30" VerticalContentAlignment="Center" Cursor="IBeam" FontFamily="Inter 18pt 18pt"/>
 
-            <CheckBox Content="Recordarme" HorizontalAlignment="Left" Margin="88,392,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Inter 18pt 18pt" VerticalContentAlignment="Center"/>
-            <Button Content="¿Olvidaste tu contraseña?" HorizontalAlignment="Left" Margin="245,391,0,0" VerticalAlignment="Top" Foreground="#FF0B99FF" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Hand" FontFamily="Inter 18pt 18pt SemiBold" FontWeight="Bold"/>
+            <CheckBox x:Name="cbRemember" Content="Recordarme" HorizontalAlignment="Left" Margin="88,392,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Inter 18pt 18pt" VerticalContentAlignment="Center"/>
+            <Button x:Name="btnForgot" Content="¿Olvidaste tu contraseña?" HorizontalAlignment="Left" Margin="245,391,0,0" VerticalAlignment="Top" Foreground="#FF0B99FF" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Hand" FontFamily="Inter 18pt 18pt SemiBold" FontWeight="Bold"/>
 
-            <Button Content="Iniciar Sesión" HorizontalAlignment="Center" Margin="0,480,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" Cursor="Hand" Width="300" Height="40" Background="#FF0B99FF" BorderBrush="{x:Null}" Foreground="White" FontWeight="Bold"/>
+            <Button x:Name="btnLogin" Content="Iniciar Sesión" HorizontalAlignment="Center" Margin="0,480,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" Cursor="Hand" Width="300" Height="40" Background="#FF0B99FF" BorderBrush="{x:Null}" Foreground="White" FontWeight="Bold" Click="btnLogin_Click"/>
 
             <Rectangle HorizontalAlignment="Left" Height="1" Margin="97,542,0,0" Stroke="#FF9E9E9E" VerticalAlignment="Top" Width="124"/>
             <Label Content="o" HorizontalAlignment="Center" Margin="0,525,0,0" VerticalAlignment="Top" FontSize="14" Foreground="#FF6D6D6D"/>
             <Rectangle HorizontalAlignment="Left" Height="1" Margin="273,542,0,0" Stroke="#FF9E9E9E" VerticalAlignment="Top" Width="124"/>
 
-            <Button Content="Registrarse" HorizontalAlignment="Center" Margin="0,569,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" Cursor="Hand" Width="300" Height="40" Background="#FFC0E0FF" BorderBrush="{x:Null}" Foreground="#FF0B99FF" FontWeight="Bold"/>
+            <Button x:Name="btnRegister" Content="Registrarse" HorizontalAlignment="Center" Margin="0,569,0,0" VerticalAlignment="Top" FontFamily="Inter 18pt 18pt SemiBold" Cursor="Hand" Width="300" Height="40" Background="#FFC0E0FF" BorderBrush="{x:Null}" Foreground="#FF0B99FF" FontWeight="Bold"/>
 
         </Grid>
     </Border>
