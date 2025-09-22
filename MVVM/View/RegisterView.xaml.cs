@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace proyecto_tdp_2.MVVM.View
     {
         // Solución: Inicializar el campo _avatarFilePath para evitar el error CS8618.
         private string _avatarFilePath = string.Empty;
+        string connectionString = ConfigurationManager.ConnectionStrings["MiReclamoDB"].ConnectionString;
 
         public RegisterView()
         {
@@ -28,6 +30,7 @@ namespace proyecto_tdp_2.MVVM.View
                 catch (InvalidOperationException) { }
             }
         }
+
 
         private void BtnMinimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
         private void BtnExit_Click(object sender, RoutedEventArgs e) => this.Close();
@@ -75,124 +78,116 @@ namespace proyecto_tdp_2.MVVM.View
         // Guardar / validar
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            SqlConnection connection = new SqlConnection("Data Source=.\\SQLEXPRESS;Initial Catalog=MiReclamo;Integrated Security=True;Trust Server Certificate=True");
-            connection.Open();
-
-            // Recolectar valores
-            string fullName = tbFullName.Text != null ? tbFullName.Text.Trim() : string.Empty;
-            string company = tbCompany.Text != null ? tbCompany.Text.Trim() : string.Empty;
-            string dni = tbDNI.Text != null ? tbDNI.Text.Trim() : string.Empty;
-            string cuit = tbCUIT.Text != null ? tbCUIT.Text.Trim() : string.Empty;
-            string? province = (cbProvince.SelectedItem as ComboBoxItem)?.Content?.ToString();
-            string phone = tbPhone.Text != null ? tbPhone.Text.Trim() : string.Empty;
-            string? email = tbEmail.Text?.Trim();
-            string role = (cbRole.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Operador";
-            string? zone = (cbZone.SelectedItem as ComboBoxItem)?.Content?.ToString();
-            bool isActive = chkActive.IsChecked == true;
-            bool sendWelcome = chkSendWelcome.IsChecked == true;
-            string password = pbPassword.Password;
-            string confirm = pbConfirm.Password;
-
-            // Validaciones básicas
-            if (string.IsNullOrWhiteSpace(fullName))
+            try
             {
-                MessageBox.Show("El nombre completo es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                tbFullName.Focus();
-                return;
-            }
+                // Recolectar valores
+                string fullName = tbFullName.Text.Trim();
+                string company = tbCompany.Text.Trim();
+                string dni = tbDNI.Text.Trim();
+                string cuit = tbCUIT.Text.Trim();
+                string province = (cbProvince.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+                string phone = tbPhone.Text.Trim();
+                string email = tbEmail.Text.Trim();
+                string role = (cbRole.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Operador";
+                string zone = (cbZone.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+                bool isActive = chkActive.IsChecked == true;
+                bool sendWelcome = chkSendWelcome.IsChecked == true;
+                string password = pbPassword.Password;
+                string confirm = pbConfirm.Password;
 
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                MessageBox.Show("El correo electrónico es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                tbEmail.Focus();
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                MessageBox.Show("La contraseña es obligatoria.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                pbPassword.Focus();
-                return;
-            }
-
-            if (password != confirm)
-            {
-                MessageBox.Show("Las contraseñas no coinciden.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                pbConfirm.Focus();
-                return;
-            }
-
-            // TODO: añadir validación adicional (formato email, longitudes, CUIT/DNI, etc.)
-
-            // Construir DTO / modelo para enviar al servicio (ejemplo)
-            var nuevoOperador = new
-            {
-                Nombre = fullName,
-                Empresa = company,
-                DNI = dni,
-                CUIT = cuit,
-                Provincia = province,
-                Telefono = phone,
-                Email = email,
-                Rol = role,
-                Zona = zone,
-                Activo = isActive,
-                AvatarPath = _avatarFilePath,
-                // nunca almacenar password en texto plano: hashear en servidor o usar protocolo seguro
-            };
-
-            // Aquí llamás a tu servicio / ViewModel para persistir. Ejemplo (placeholder):
-            bool creado = CrearUsuarioEnServicio(nuevoOperador, password);
-
-            if (creado)
-            {
-                if (sendWelcome)
+                // Validaciones
+                if (string.IsNullOrWhiteSpace(fullName))
                 {
-                    // Llamá a tu servicio de correo para enviar email de bienvenida.
+                    MessageBox.Show("El nombre completo es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    tbFullName.Focus();
+                    return;
                 }
 
-                MessageBox.Show("Usuario creado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.DialogResult = true;
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("Ocurrió un error al crear el usuario.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    MessageBox.Show("El correo electrónico es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    tbEmail.Focus();
+                    return;
+                }
 
-            SqlCommand command = new SqlCommand("insert into Usuario" +
-                                                "(nombre,email,password,telefono,rol,servicio) values" +
-                                                "(@nombre,@email,@password,@telefono,@rol,@servicio)", connection);
-            command.Parameters.AddWithValue("@nombre",fullName);
-            command.Parameters.AddWithValue("@email", email);
-            command.Parameters.AddWithValue("@password", password);
-            command.Parameters.AddWithValue("@telefono", phone);
-            if (role == "Operador")
-            {
-                command.Parameters.AddWithValue("@rol", 1);
-            }
-            else
-            {
-                command.Parameters.AddWithValue("@rol", 0);
-            }
-            switch (company)
-            {
-                case "IOSCOR":
-                    command.Parameters.AddWithValue("@servicio", 0);
-                    break;
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    MessageBox.Show("La contraseña es obligatoria.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    pbPassword.Focus();
+                    return;
+                }
 
-                case "AguasCorrientes":
-                    command.Parameters.AddWithValue("@servicio", 1);
-                    break;
+                if (password != confirm)
+                {
+                    MessageBox.Show("Las contraseñas no coinciden.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    pbConfirm.Focus();
+                    return;
+                }
 
-                //carga muni por defecto
-                default:
-                    command.Parameters.AddWithValue("@servicio", 2);
-                    break;
+                // Abrir conexión desde App.config
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"INSERT INTO Usuario (nombre, email, password, telefono, rol, servicio) 
+                             VALUES (@nombre, @correo, @pass, @telefono, @rol, @servicio)";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@nombre", fullName);
+                        command.Parameters.AddWithValue("@correo", email);
+                        command.Parameters.AddWithValue("@pass", password); // ⚠️ OJO: en producción se debe hashear
+                        command.Parameters.AddWithValue("@telefono", phone);
+
+                        // Mapear rol a ID real (asegurate que exista en la tabla Roles)
+                        if (role == "Operador")
+                            command.Parameters.AddWithValue("@rol", 1);
+                        else
+                            command.Parameters.AddWithValue("@rol", 2);
+
+                        // Mapear servicio a ID real (asegurate que exista en la tabla Servicios)
+                        switch (company)
+                        {
+                            case "IOSCOR":
+                                command.Parameters.AddWithValue("@servicio", 1);
+                                break;
+                            case "AguasCorrientes":
+                                command.Parameters.AddWithValue("@servicio", 2);
+                                break;
+                            default:
+                                command.Parameters.AddWithValue("@servicio", 3);
+                                break;
+                        }
+
+                        int rows = command.ExecuteNonQuery();
+                        if (rows > 0)
+                        {
+                            if (sendWelcome)
+                            {
+                                // Acá podrías llamar a un servicio de correo para enviar la bienvenida
+                            }
+
+                            MessageBox.Show("Usuario creado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se pudo crear el usuario.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
             }
-            
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Error en la base de datos: " + ex.Message, "SQL Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-        
+
+
         private bool CrearUsuarioEnServicio(object usuarioDto, string password)
         {
             // Ejemplo: aquí deberías:
