@@ -18,11 +18,16 @@
     <None Remove="Fonts\Inter.ttf" />
     <None Remove="Images\account_circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.png" />
     <None Remove="Images\account_circle_31dp_000000_FILL0_wght400_GRAD0_opsz24.png" />
+    <None Remove="Images\man.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="MVVM\Model\" />
     <Folder Include="MVVM\ViewModel\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GMap.NET.WinPresentation" Version="2.1.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +56,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\account_circle_31dp_000000_FILL0_wght400_GRAD0_opsz24.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\man.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace proyecto_tdp_2.MVVM.View
@@ -43,12 +44,51 @@ namespace proyecto_tdp_2.MVVM.View
                     BitmapImage img = new BitmapImage();
                     img.BeginInit();
                     img.UriSource = new System.Uri(file);
-                    img.DecodePixelWidth = 200; // Optimiza memoria
+                    img.DecodePixelWidth = 200;
                     img.EndInit();
 
                     _imagenes.Add(img);
                 }
             }
+        }
+
+        private void BtnExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                try
+                {
+                    this.DragMove();
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
+        }
+
+        private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                ToggleMaximizeRestore();
+            }
+        }
+
+        private void ToggleMaximizeRestore()
+        {
+            this.WindowState = this.WindowState == WindowState.Normal
+                               ? WindowState.Maximized
+                               : WindowState.Normal;
         }
 
         private void BtnEliminarFoto_Click(object sender, RoutedEventArgs e)
@@ -57,6 +97,43 @@ namespace proyecto_tdp_2.MVVM.View
             {
                 _imagenes.Remove(img);
             }
+        }
+        private void mapView_Loaded(object sender, RoutedEventArgs e)
+        {
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
+            // choose your provider here
+            mapView.MapProvider = GMap.NET.MapProviders.OpenStreetMapProvider.Instance;
+            mapView.MinZoom = 2;
+            mapView.MaxZoom = 17;
+            // whole world zoom
+            mapView.Zoom = 2;
+            // lets the map use the mousewheel to zoom
+            mapView.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
+            // lets the user drag the map
+            mapView.CanDragMap = true;
+            // lets the user drag the map with the left mouse button
+            mapView.DragButton = MouseButton.Left;
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            MisReclamosView reclamosView = new MisReclamosView();
+            reclamosView.Show();
+            this.Close();
+        }
+
+        private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
+        {
+            ProfileView perfil = new ProfileView();
+            perfil.Show();
+            this.Close();
+        }
+
+        private void RadioButton_Checked_2(object sender, RoutedEventArgs e)
+        {
+            RegisterView register = new RegisterView();
+            register.Show();
+            this.Close();
         }
     }
 }
