@@ -147,12 +147,12 @@
 
                             <TextBox Grid.Column="0"
                                      Margin="5"
-                                     Height="35"
+                                     Height="35" VerticalContentAlignment="Center"
                                      />
 
                             <ComboBox Grid.Column="1"
                                       Margin="5"
-                                      Height="35">
+                                      Height="35" VerticalContentAlignment="Center">
                                 <ComboBoxItem Content="Todos"
                                               IsSelected="True" />
                                 <ComboBoxItem Content="Pendiente" />
@@ -162,7 +162,7 @@
 
                             <ComboBox Grid.Column="2"
                                       Margin="5"
-                                      Height="35">
+                                      Height="35" VerticalContentAlignment="Center">
                                 <ComboBoxItem Content="Todos"
                                               IsSelected="True" />
                                 <ComboBoxItem Content="Agua" />

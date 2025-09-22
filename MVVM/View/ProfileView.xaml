@@ -116,7 +116,7 @@
                                          FontSize="14"
                                          Margin="10,5"
                                          Style="{StaticResource MenuButtonTheme}"
-                                         IsChecked="True"
+                                         IsChecked="False"
                                          Checked="RadioButton_Checked_2" />
                         </StackPanel>
 

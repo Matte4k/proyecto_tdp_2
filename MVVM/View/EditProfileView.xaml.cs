@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace proyecto_tdp_2.MVVM.View
 {
@@ -35,6 +37,9 @@ namespace proyecto_tdp_2.MVVM.View
 
             MessageBox.Show("Perfil actualizado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
+
+            ProfileView perfil = new ProfileView();
+            perfil.Show();
             this.Close();
         }
 
@@ -44,6 +49,34 @@ namespace proyecto_tdp_2.MVVM.View
                 this.DragMove();
         }
 
+        private void TxtNombre_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            // Regex: solo letras y espacios (NO números)
+            Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
 
+            // Si el texto NO cumple, se bloquea
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void TxtTelefono_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+
+            // Regex: solo dígitos
+            Regex regex = new Regex("[^0-9]+");
+
+            // Bloquea si no es número
+            if (regex.IsMatch(e.Text))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // Bloquea si ya hay 8 dígitos
+            if (textBox != null && textBox.Text.Length >= 8)
+            {
+                e.Handled = true;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -173,6 +174,102 @@ namespace proyecto_tdp_2.MVVM.View
             {
                 return false;
             }
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            DashboardView home = new DashboardView();
+            home.Show();
+            this.Close();
+        }
+
+        private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
+        {
+            MisReclamosView reclamos = new MisReclamosView();
+            reclamos.Show();
+            this.Close();
+        }
+
+        private void RadioButton_Checked_2(object sender, RoutedEventArgs e)
+        {
+            ProfileView perfil = new ProfileView();
+            perfil.Show();
+            this.Close();
+        }
+
+        private void tbDNI_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+
+            // Regex: solo dígitos
+            Regex regex = new Regex("[^0-9]+");
+
+            // Bloquea si no es número
+            if (regex.IsMatch(e.Text))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // Bloquea si ya hay 8 dígitos
+            if (textBox != null && textBox.Text.Length >= 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void tbCUIT_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+
+            // Regex: solo dígitos
+            Regex regex = new Regex("[^0-9]+");
+
+            // Bloquea si no es número
+            if (regex.IsMatch(e.Text))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // Bloquea si ya hay 11 dígitos
+            if (textBox != null && textBox.Text.Length >= 11)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void tbPhone_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+
+            // Regex: solo dígitos
+            Regex regex = new Regex("[^0-9]+");
+
+            // Bloquea si no es número
+            if (regex.IsMatch(e.Text))
+            {
+                e.Handled = true;
+                return;
+            }
+        }
+
+        private void tbFullName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Regex: solo letras y espacios (NO números)
+            Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
+
+            // Si el texto NO cumple, se bloquea
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void tbCompany_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Regex: solo letras y espacios (NO números)
+            Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
+
+            // Si el texto NO cumple, se bloquea
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

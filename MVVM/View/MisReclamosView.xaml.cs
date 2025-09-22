@@ -52,7 +52,9 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void RadioButton_Checked_2(object sender, RoutedEventArgs e)
         {
-
+            RegisterView nuevoOperador = new RegisterView();
+            nuevoOperador.Show();
+            this.Close();
         }
     }
 }

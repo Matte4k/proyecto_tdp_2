@@ -71,7 +71,7 @@
                              BorderBrush="#3498DB"
                              BorderThickness="1"
                              Padding="5"
-                             FontSize="14" />
+                             FontSize="14" LostFocus="tbMail_LostFocus" />
                 </StackPanel>
 
                 <StackPanel>
@@ -112,32 +112,8 @@
                         FontSize="16"
                         FontWeight="Bold"
                         BorderThickness="0"
-                        Click="btnLogin_Click" />
-
-                <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            >
-                    <Rectangle Width="100"
-                               Height="1"
-                               Fill="#CCCCCC" />
-                    <TextBlock Text="o"
-                               Foreground="Gray"
-                               FontSize="14" />
-                    <Rectangle Width="100"
-                               Height="1"
-                               Fill="#CCCCCC" />
-                </StackPanel>
-
-                <Button x:Name="btnRegister"
-                        Content="Registrarse"
-                        Width="300"
-                        Height="40"
-                        Background="#CFE5FF"
-                        Foreground="#0066FF"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        BorderThickness="0" />
+                        Click="btnLogin_Click"
+                        IsDefault="True" />
             </StackPanel>
         </Grid>
     </Border>

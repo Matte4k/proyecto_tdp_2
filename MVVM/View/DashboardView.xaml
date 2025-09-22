@@ -104,7 +104,7 @@
                                          Height="40"
                                          FontSize="14"
                                          Margin="10,5"
-                                         Style="{StaticResource MenuButtonTheme}" />
+                                         Style="{StaticResource MenuButtonTheme}" IsChecked="True" />
                             <RadioButton Content="Mis Reclamos"
                                          Height="40"
                                          FontSize="14"
@@ -181,7 +181,7 @@
                                     <TextBlock Text="Tipo de Servicio:" />
                                     <ComboBox Margin="0,5,0,20"
                                               Height="35"
-                                              MinWidth="120">
+                                              MinWidth="120" VerticalContentAlignment="Center">
                                         <ComboBoxItem IsEnabled="False"
                                                       IsSelected="True"
                                                       Foreground="Gray">
@@ -195,7 +195,7 @@
                                     <TextBlock Text="Ubicación:" />
                                     <TextBox Margin="0,5,0,10"
                                              Height="35"
-                                             MinWidth="120" />
+                                             MinWidth="120" VerticalContentAlignment="Center" />
                                     <Border Height="150"
                                             Background="#F0F0F0"
                                             CornerRadius="5"
