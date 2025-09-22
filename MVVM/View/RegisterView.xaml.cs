@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -74,6 +75,9 @@ namespace proyecto_tdp_2.MVVM.View
         // Guardar / validar
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
+            SqlConnection connection = new SqlConnection("Data Source=.\\SQLEXPRESS;Initial Catalog=MiReclamo;Integrated Security=True;Trust Server Certificate=True");
+            connection.Open();
+
             // Recolectar valores
             string fullName = tbFullName.Text != null ? tbFullName.Text.Trim() : string.Empty;
             string company = tbCompany.Text != null ? tbCompany.Text.Trim() : string.Empty;
@@ -155,9 +159,40 @@ namespace proyecto_tdp_2.MVVM.View
             {
                 MessageBox.Show("Ocurrió un error al crear el usuario.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
 
-        // Placeholder: implementá la llamada real a tu API/servicio o ViewModel
+            SqlCommand command = new SqlCommand("insert into Usuario" +
+                                                "(nombre,email,password,telefono,rol,servicio) values" +
+                                                "(@nombre,@email,@password,@telefono,@rol,@servicio)", connection);
+            command.Parameters.AddWithValue("@nombre",fullName);
+            command.Parameters.AddWithValue("@email", email);
+            command.Parameters.AddWithValue("@password", password);
+            command.Parameters.AddWithValue("@telefono", phone);
+            if (role == "Operador")
+            {
+                command.Parameters.AddWithValue("@rol", 1);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@rol", 0);
+            }
+            switch (company)
+            {
+                case "IOSCOR":
+                    command.Parameters.AddWithValue("@servicio", 0);
+                    break;
+
+                case "AguasCorrientes":
+                    command.Parameters.AddWithValue("@servicio", 1);
+                    break;
+
+                //carga muni por defecto
+                default:
+                    command.Parameters.AddWithValue("@servicio", 2);
+                    break;
+            }
+            
+        }
+        
         private bool CrearUsuarioEnServicio(object usuarioDto, string password)
         {
             // Ejemplo: aquí deberías:
