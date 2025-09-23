@@ -3,14 +3,21 @@ using System.Windows.Input;
 
 namespace proyecto_tdp_2.MVVM.View
 {
-    /// <summary>
-    /// Lógica de interacción para ProfileView.xaml
-    /// </summary>
+
     public partial class ProfileView : Window
     {
         public ProfileView()
         {
             InitializeComponent();
+
+            txtNombre.Text = Session.Nombre;
+            txtRol.Text = Session.Rol;
+            txtEmpresa.Text = Session.Empresa;
+            txtDni.Text = Session.Dni;
+            txtCuit.Text = Session.Cuit;
+            txtCorreo.Text = Session.Correo;
+            txtProvincia.Text = Session.Provincia;
+            txtTelefono.Text = Session.Telefono;
         }
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)

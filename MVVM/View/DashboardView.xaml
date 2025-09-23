@@ -138,10 +138,10 @@
                             </Ellipse>
 
                             <StackPanel Margin="10,0,0,0">
-                                <TextBlock Text="Juan Pérez"
+                                <TextBlock x:Name="txtNombre"
                                            FontWeight="Bold"
                                            FontSize="14" />
-                                <TextBlock Text="Administrador"
+                                <TextBlock x:Name="txtRol"
                                            FontSize="12"
                                            Foreground="Gray" />
                             </StackPanel>

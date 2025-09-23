@@ -7,9 +7,6 @@ using System.Windows.Input;
 
 namespace proyecto_tdp_2.MVVM.View
 {
-    /// <summary>
-    /// Interaction logic for LoginView.xaml
-    /// </summary>
     public partial class LoginView : Window
     {
         public LoginView()
@@ -48,27 +45,39 @@ namespace proyecto_tdp_2.MVVM.View
                 {
                     connection.Open();
 
-                    string query = "SELECT COUNT(*) FROM Usuario WHERE email = @correo AND password = @pass";
+                    string query = "SELECT id_usuario, nombre, rol, empresa, dni, cuit, email, provincia, telefono " +
+                "FROM Usuario WHERE email = @correo AND password = @pass";
 
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@correo", email);
-                        cmd.Parameters.AddWithValue("@pass", password); // ⚠️ OJO: en producción se debe usar hash
+                        cmd.Parameters.AddWithValue("@pass", password);
 
-                        int count = (int)cmd.ExecuteScalar();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Session.UserId = reader.GetInt32(0);
+                                Session.Nombre = reader.GetString(1);
+                                Session.Rol = reader.GetString(2);
+                                Session.Empresa = reader.GetString(3);
+                                Session.Dni = reader.GetString(4);
+                                Session.Cuit = reader.GetString(5);
+                                Session.Correo = reader.GetString(6);
+                                Session.Provincia = reader.GetString(7);
+                                Session.Telefono = reader.GetString(8);
 
-                        if (count > 0)
-                        {
-                            DashboardView home = new DashboardView();
-                            home.Show();
-                            this.Close();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Correo o contraseña incorrectos.",
-                                            "Error",
-                                            MessageBoxButton.OK,
-                                            MessageBoxImage.Error);
+                                DashboardView home = new DashboardView();
+                                home.Show();
+                                this.Close();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Correo o contraseña incorrectos.",
+                                                "Error",
+                                                MessageBoxButton.OK,
+                                                MessageBoxImage.Error);
+                            }
                         }
                     }
                 }
@@ -101,8 +110,8 @@ namespace proyecto_tdp_2.MVVM.View
             }
             else
             {
-                textBox.ClearValue(Border.BorderBrushProperty);
-                textBox.ToolTip = null;
+                textBox!.ClearValue(Border.BorderBrushProperty);
+                textBox!.ToolTip = null;
             }
 
         }

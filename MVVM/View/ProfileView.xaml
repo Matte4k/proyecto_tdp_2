@@ -168,36 +168,34 @@
                                 </Ellipse.Fill>
                             </Ellipse>
 
-                            <TextBlock Text="Juan Pérez"
+                            <TextBlock x:Name="txtNombre"
                                        FontSize="20"
                                        FontWeight="Bold"
-                                       Foreground="#2C3E50"
-                                       HorizontalAlignment="Center" />
-                            <TextBlock Text="Administrador"
+                                       Foreground="#2C3E50" />
+                            <TextBlock x:Name="txtRol"
                                        FontSize="16"
                                        Foreground="Gray"
-                                       HorizontalAlignment="Center"
                                        Margin="0,0,0,20" />
 
                             <StackPanel Orientation="Vertical"
                                         Width="400"
                                         Margin="0,0,0,20">
-                                <TextBlock Text="Empresa: Aguas de Corrientes"
+                                <TextBlock x:Name="txtEmpresa"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock Text="DNI: 35123456"
+                                <TextBlock x:Name="txtDni"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock Text="CUIT: 20-35123456-7"
+                                <TextBlock x:Name="txtCuit"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock Text="Correo Electrónico: juanperez123@gmail.com"
+                                <TextBlock x:Name="txtCorreo"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock Text="Provincia: Corrientes"
+                                <TextBlock x:Name="txtProvincia"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock Text="Teléfono: 3794010101"
+                                <TextBlock x:Name="txtTelefono"
                                            FontSize="15"
                                            Margin="0,5" />
                             </StackPanel>

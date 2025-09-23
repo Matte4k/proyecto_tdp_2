@@ -199,10 +199,13 @@
 
                                     <TextBlock Text="Empresa"
                                                Margin="0,5" />
-                                    <TextBox x:Name="tbCompany"
-                                             Width="350"
-                                             Height="30"
-                                             Margin="0,0,0,10" VerticalContentAlignment="Center" PreviewTextInput="tbCompany_PreviewTextInput" />
+                                    <ComboBox x:Name="cbCompany"
+                                              Width="350"
+                                              Height="30"
+                                              Margin="0,0,0,10"
+                                              DisplayMemberPath="nombre"
+                                              SelectedValuePath="id_servicio"
+                                              VerticalContentAlignment="Center" />
 
                                     <TextBlock Text="Rol"
                                                Margin="0,5" />

@@ -7,17 +7,20 @@ using System.Windows.Media.Imaging;
 
 namespace proyecto_tdp_2.MVVM.View
 {
-    /// <summary>
-    /// Interaction logic for DashboardView.xaml
-    /// </summary>
     public partial class DashboardView : Window
     {
         private ObservableCollection<BitmapImage> _imagenes;
+        public string NombreUsuario { get; set; }
+        public string RolUsuario { get; set; }
+
         public DashboardView()
         {
             InitializeComponent();
             _imagenes = new ObservableCollection<BitmapImage>();
             PreviewPanel.ItemsSource = _imagenes;
+
+            txtNombre.Text = Session.Nombre;
+            txtRol.Text = Session.Rol;
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)

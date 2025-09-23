@@ -19,7 +19,42 @@ namespace proyecto_tdp_2.MVVM.View
         public RegisterView()
         {
             InitializeComponent();
+            LoadCompanies();
         }
+
+        private void LoadCompanies()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT id_servicio, nombre FROM Servicios";
+
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var companies = new List<dynamic>();
+                        while (reader.Read())
+                        {
+                            companies.Add(new
+                            {
+                                id_servicio = reader.GetInt32(0),
+                                nombre = reader.GetString(1)
+                            });
+                        }
+
+                        cbCompany.ItemsSource = companies;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar las empresas: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
 
         // Permitir arrastrar ventana desde la barra superior
         private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -82,7 +117,7 @@ namespace proyecto_tdp_2.MVVM.View
             {
                 // Recolectar valores
                 string fullName = tbFullName.Text.Trim();
-                string company = tbCompany.Text.Trim();
+                int selectedServiceId = (int)(cbCompany.SelectedValue ?? 0);
                 string dni = tbDNI.Text.Trim();
                 string cuit = tbCUIT.Text.Trim();
                 string province = (cbProvince.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
@@ -95,6 +130,11 @@ namespace proyecto_tdp_2.MVVM.View
                 string password = pbPassword.Password;
                 string confirm = pbConfirm.Password;
 
+                if (selectedServiceId == 0)
+                {
+                    MessageBox.Show("Debes seleccionar una empresa.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
                 // Validaciones
                 if (string.IsNullOrWhiteSpace(fullName))
                 {
@@ -136,36 +176,20 @@ namespace proyecto_tdp_2.MVVM.View
                     {
                         command.Parameters.AddWithValue("@nombre", fullName);
                         command.Parameters.AddWithValue("@correo", email);
-                        command.Parameters.AddWithValue("@pass", password); // ⚠️ OJO: en producción se debe hashear
+                        command.Parameters.AddWithValue("@pass", password);
                         command.Parameters.AddWithValue("@telefono", phone);
 
-                        // Mapear rol a ID real (asegurate que exista en la tabla Roles)
                         if (role == "Operador")
                             command.Parameters.AddWithValue("@rol", 1);
                         else
                             command.Parameters.AddWithValue("@rol", 2);
 
-                        // Mapear servicio a ID real (asegurate que exista en la tabla Servicios)
-                        switch (company)
-                        {
-                            case "IOSCOR":
-                                command.Parameters.AddWithValue("@servicio", 1);
-                                break;
-                            case "AguasCorrientes":
-                                command.Parameters.AddWithValue("@servicio", 2);
-                                break;
-                            default:
-                                command.Parameters.AddWithValue("@servicio", 3);
-                                break;
-                        }
+                        command.Parameters.AddWithValue("@servicio", selectedServiceId);
 
                         int rows = command.ExecuteNonQuery();
                         if (rows > 0)
                         {
-                            if (sendWelcome)
-                            {
-                                // Acá podrías llamar a un servicio de correo para enviar la bienvenida
-                            }
+
 
                             MessageBox.Show("Usuario creado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                             this.Close();
