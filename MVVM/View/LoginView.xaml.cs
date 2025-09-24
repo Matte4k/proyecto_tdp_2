@@ -45,8 +45,17 @@ namespace proyecto_tdp_2.MVVM.View
                 {
                     connection.Open();
 
-                    string query = "SELECT id_usuario, nombre, rol, empresa, dni, cuit, email, provincia, telefono " +
-                "FROM Usuario WHERE email = @correo AND password = @pass";
+                    string query = @"
+                SELECT u.id_usuario, 
+                       u.nombre, 
+                       r.nombre AS rol, 
+                       u.email, 
+                       u.telefono, 
+                       s.nombre AS servicio
+                FROM Usuario u
+                INNER JOIN Roles r ON u.rol = r.id_rol
+                INNER JOIN Servicios s ON u.servicio = s.id_servicio
+                WHERE u.email = @correo AND u.password = @pass";
 
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
@@ -57,15 +66,12 @@ namespace proyecto_tdp_2.MVVM.View
                         {
                             if (reader.Read())
                             {
-                                Session.UserId = reader.GetInt32(0);
-                                Session.Nombre = reader.GetString(1);
-                                Session.Rol = reader.GetString(2);
-                                Session.Empresa = reader.GetString(3);
-                                Session.Dni = reader.GetString(4);
-                                Session.Cuit = reader.GetString(5);
-                                Session.Correo = reader.GetString(6);
-                                Session.Provincia = reader.GetString(7);
-                                Session.Telefono = reader.GetString(8);
+                                Session.UserId = (int)reader["id_usuario"];
+                                Session.Nombre = reader["nombre"]?.ToString() ?? string.Empty;
+                                Session.Rol = reader["rol"]?.ToString() ?? string.Empty;
+                                Session.Correo = reader["email"]?.ToString() ?? string.Empty;
+                                Session.Telefono = reader["telefono"]?.ToString() ?? string.Empty;
+                                Session.Servicio = reader["servicio"]?.ToString() ?? string.Empty;
 
                                 DashboardView home = new DashboardView();
                                 home.Show();
@@ -93,6 +99,7 @@ namespace proyecto_tdp_2.MVVM.View
                                 MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void tbMail_LostFocus(object sender, RoutedEventArgs e)
         {

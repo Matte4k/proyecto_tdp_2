@@ -118,9 +118,6 @@ namespace proyecto_tdp_2.MVVM.View
                 // Recolectar valores
                 string fullName = tbFullName.Text.Trim();
                 int selectedServiceId = (int)(cbCompany.SelectedValue ?? 0);
-                string dni = tbDNI.Text.Trim();
-                string cuit = tbCUIT.Text.Trim();
-                string province = (cbProvince.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
                 string phone = tbPhone.Text.Trim();
                 string email = tbEmail.Text.Trim();
                 string role = (cbRole.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Operador";

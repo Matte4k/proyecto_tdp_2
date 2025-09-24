@@ -183,19 +183,22 @@
                                 <TextBlock x:Name="txtEmpresa"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock x:Name="txtDni"
+                                <TextBlock Text="43824761"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock x:Name="txtCuit"
+                                <TextBlock Text="20438247611"
                                            FontSize="15"
                                            Margin="0,5" />
                                 <TextBlock x:Name="txtCorreo"
                                            FontSize="15"
                                            Margin="0,5" />
-                                <TextBlock x:Name="txtProvincia"
+                                <TextBlock Text="Corrientes"
                                            FontSize="15"
                                            Margin="0,5" />
                                 <TextBlock x:Name="txtTelefono"
+                                           FontSize="15"
+                                           Margin="0,5" />
+                                <TextBlock x:Name="txtServicio"
                                            FontSize="15"
                                            Margin="0,5" />
                             </StackPanel>
