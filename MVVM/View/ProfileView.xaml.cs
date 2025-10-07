@@ -10,11 +10,14 @@ namespace proyecto_tdp_2.MVVM.View
         {
             InitializeComponent();
 
-            txtNombre.Text = Session.Nombre;
+            txtNombre.Text = $"{Session.Nombre} {Session.Apellido}";
             txtRol.Text = Session.Rol;
             txtCorreo.Text = Session.Correo;
             txtTelefono.Text = Session.Telefono;
             txtServicio.Text = Session.Servicio;
+            txtProvincia.Text = Session.Provincia;
+            txtDni.Text = Session.Dni;
+            txtCuit.Text = Session.Cuit;
         }
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)

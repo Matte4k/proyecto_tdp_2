@@ -177,31 +177,84 @@
                                        Foreground="Gray"
                                        Margin="0,0,0,20" />
 
-                            <StackPanel Orientation="Vertical"
-                                        Width="400"
-                                        Margin="0,0,0,20">
-                                <TextBlock x:Name="txtEmpresa"
-                                           FontSize="15"
-                                           Margin="0,5" />
-                                <TextBlock Text="43824761"
-                                           FontSize="15"
-                                           Margin="0,5" />
-                                <TextBlock Text="20438247611"
-                                           FontSize="15"
-                                           Margin="0,5" />
-                                <TextBlock x:Name="txtCorreo"
-                                           FontSize="15"
-                                           Margin="0,5" />
-                                <TextBlock Text="Corrientes"
-                                           FontSize="15"
-                                           Margin="0,5" />
-                                <TextBlock x:Name="txtTelefono"
-                                           FontSize="15"
-                                           Margin="0,5" />
-                                <TextBlock x:Name="txtServicio"
-                                           FontSize="15"
-                                           Margin="0,5" />
-                            </StackPanel>
+                            <Grid Width="400" Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0"
+               Text="DNI:"
+               FontWeight="Bold"
+               FontSize="15"
+               Margin="0,5" />
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+               x:Name="txtDni"
+               FontSize="15"
+               Margin="0,5" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="0"
+               Text="CUIT:"
+               FontWeight="Bold"
+               FontSize="15"
+               Margin="0,5" />
+                                <TextBlock Grid.Row="1" Grid.Column="1"
+               x:Name="txtCuit"
+               FontSize="15"
+               Margin="0,5" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="0"
+               Text="Correo:"
+               FontWeight="Bold"
+               FontSize="15"
+               Margin="0,5" />
+                                <TextBlock Grid.Row="2" Grid.Column="1"
+               x:Name="txtCorreo"
+               FontSize="15"
+               Margin="0,5" />
+
+                                <TextBlock Grid.Row="3" Grid.Column="0"
+               Text="Provincia:"
+               FontWeight="Bold"
+               FontSize="15"
+               Margin="0,5" />
+                                <TextBlock Grid.Row="3" Grid.Column="1"
+               x:Name="txtProvincia"
+               FontSize="15"
+               Margin="0,5" />
+
+                                
+                                <TextBlock Grid.Row="4" Grid.Column="0"
+               Text="Teléfono:"
+               FontWeight="Bold"
+               FontSize="15"
+               Margin="0,5" />
+                                <TextBlock Grid.Row="4" Grid.Column="1"
+               x:Name="txtTelefono"
+               FontSize="15"
+               Margin="0,5" />
+
+                                
+                                <TextBlock Grid.Row="5" Grid.Column="0"
+               Text="Servicio:"
+               FontWeight="Bold"
+               FontSize="15"
+               Margin="0,5" />
+                                <TextBlock Grid.Row="5" Grid.Column="1"
+               x:Name="txtServicio"
+               FontSize="15"
+               Margin="0,5" />
+                            </Grid>
+
 
                             <Button Content="Editar Perfil"
                                     Background="#0066FF"

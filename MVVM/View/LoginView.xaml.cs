@@ -46,16 +46,21 @@ namespace proyecto_tdp_2.MVVM.View
                     connection.Open();
 
                     string query = @"
-                SELECT u.id_usuario, 
-                       u.nombre, 
-                       r.nombre AS rol, 
-                       u.email, 
-                       u.telefono, 
-                       s.nombre AS servicio
-                FROM Usuario u
-                INNER JOIN Roles r ON u.rol = r.id_rol
-                INNER JOIN Servicios s ON u.servicio = s.id_servicio
-                WHERE u.email = @correo AND u.password = @pass";
+                        SELECT u.id_usuario, 
+                               u.nombre, 
+                               u.apellido,
+                               r.nombre AS rol, 
+                               u.email, 
+                               u.telefono, 
+                               s.nombre AS servicio,
+                               p.nombre AS provincia, 
+                               u.dni,
+                               u.cuit
+                        FROM Usuario u
+                        INNER JOIN Roles r ON u.id_rol = r.id_rol
+                        INNER JOIN Servicios s ON u.id_servicio = s.id_servicio
+                        INNER JOIN Provincia p ON u.id_provincia = p.id_provincia
+                        WHERE u.email = @correo AND u.password = @pass";
 
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
@@ -67,11 +72,14 @@ namespace proyecto_tdp_2.MVVM.View
                             if (reader.Read())
                             {
                                 Session.UserId = (int)reader["id_usuario"];
-                                Session.Nombre = reader["nombre"]?.ToString() ?? string.Empty;
+                                Session.Nombre = $"{reader["nombre"]} {reader["apellido"]}";
                                 Session.Rol = reader["rol"]?.ToString() ?? string.Empty;
                                 Session.Correo = reader["email"]?.ToString() ?? string.Empty;
                                 Session.Telefono = reader["telefono"]?.ToString() ?? string.Empty;
                                 Session.Servicio = reader["servicio"]?.ToString() ?? string.Empty;
+                                Session.Provincia = reader["provincia"]?.ToString() ?? string.Empty;
+                                Session.Dni = reader["dni"]?.ToString() ?? string.Empty;
+                                Session.Cuit = reader["cuit"]?.ToString() ?? string.Empty;
 
                                 DashboardView home = new DashboardView();
                                 home.Show();

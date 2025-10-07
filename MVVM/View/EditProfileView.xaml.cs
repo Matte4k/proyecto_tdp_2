@@ -1,6 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Configuration;
+using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+
 
 namespace proyecto_tdp_2.MVVM.View
 {
@@ -9,6 +12,40 @@ namespace proyecto_tdp_2.MVVM.View
         public EditProfileView()
         {
             InitializeComponent();
+            CargarDatosUsuario();
+        }
+
+        private void CargarDatosUsuario()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["MiReclamoDB"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = "SELECT nombre, apellido, telefono, password FROM Usuario WHERE id_usuario = @idUsuario";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@idUsuario", Session.UserId);
+
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            TxtNombre.Text = reader["nombre"].ToString();
+                            TxtApellido.Text = reader["apellido"].ToString();
+                            TxtTelefono.Text = reader["telefono"].ToString();
+                            TxtPassword.Password = reader["password"].ToString();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar el perfil: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)
@@ -23,25 +60,79 @@ namespace proyecto_tdp_2.MVVM.View
             this.Close();
         }
 
+
+
         private void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            string nombre = TxtNombre.Text;
-            string telefono = TxtTelefono.Text;
-            string password = TxtPassword.Password;
+            string nombre = TxtNombre.Text.Trim();
+            string apellido = TxtApellido.Text.Trim();
+            string telefonoTexto = TxtTelefono.Text.Trim();
+            string password = TxtPassword.Password.Trim();
 
-            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(telefono) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(nombre) ||
+                string.IsNullOrWhiteSpace(apellido) ||
+                string.IsNullOrWhiteSpace(telefonoTexto) ||
+                string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show("Todos los campos son obligatorios.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            MessageBox.Show("Perfil actualizado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (!long.TryParse(telefonoTexto, out long telefono))
+            {
+                MessageBox.Show("El teléfono debe ser numérico.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
+            string connectionString = ConfigurationManager.ConnectionStrings["MiReclamoDB"].ConnectionString;
 
-            ProfileView perfil = new ProfileView();
-            perfil.Show();
-            this.Close();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = @"
+                        UPDATE Usuario 
+                        SET nombre = @nombre, 
+                            apellido = @apellido,
+                            telefono = @telefono, 
+                            password = @password
+                        WHERE id_usuario = @idUsuario";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@nombre", nombre);
+                        cmd.Parameters.AddWithValue("@apellido", apellido);
+                        cmd.Parameters.AddWithValue("@telefono", telefono);
+                        cmd.Parameters.AddWithValue("@password", password);
+                        cmd.Parameters.AddWithValue("@idUsuario", Session.UserId);
+
+                        int filas = cmd.ExecuteNonQuery();
+
+                        if (filas > 0)
+                        {
+                            MessageBox.Show("Perfil actualizado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                            ProfileView perfil = new ProfileView();
+                            perfil.Show();
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se encontró el usuario a actualizar.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al actualizar el perfil: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
+
+
+
+
 
         private void TopBar_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -65,18 +156,24 @@ namespace proyecto_tdp_2.MVVM.View
             // Regex: solo dígitos
             Regex regex = new Regex("[^0-9]+");
 
-            // Bloquea si no es número
+
             if (regex.IsMatch(e.Text))
             {
                 e.Handled = true;
                 return;
             }
 
-            // Bloquea si ya hay 8 dígitos
-            if (textBox != null && textBox.Text.Length >= 8)
+
+            if (textBox != null && textBox.Text.Length >= 15)
             {
                 e.Handled = true;
             }
+        }
+
+        private void TxtApellido_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

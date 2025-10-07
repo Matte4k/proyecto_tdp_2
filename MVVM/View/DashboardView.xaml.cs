@@ -21,6 +21,10 @@ namespace proyecto_tdp_2.MVVM.View
 
             txtNombre.Text = Session.Nombre;
             txtRol.Text = Session.Rol;
+            if (Session.Rol != "SuperAdmin")
+            {
+                rbAgregarOperador.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -12,7 +13,6 @@ namespace proyecto_tdp_2.MVVM.View
 {
     public partial class RegisterView : Window
     {
-        // Solución: Inicializar el campo _avatarFilePath para evitar el error CS8618.
         private string _avatarFilePath = string.Empty;
         string connectionString = ConfigurationManager.ConnectionStrings["MiReclamoDB"].ConnectionString;
 
@@ -20,6 +20,7 @@ namespace proyecto_tdp_2.MVVM.View
         {
             InitializeComponent();
             LoadCompanies();
+            CargarProvincias();
         }
 
         private void LoadCompanies()
@@ -54,9 +55,32 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
+        private void CargarProvincias()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT id_provincia, nombre FROM Provincia ORDER BY nombre";
+
+                    SqlCommand cmd = new SqlCommand(query, connection);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    cbProvince.ItemsSource = dt.DefaultView;
+                    cbProvince.DisplayMemberPath = "nombre";
+                    cbProvince.SelectedValuePath = "id_provincia";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar provincias: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
 
-        // Permitir arrastrar ventana desde la barra superior
         private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -76,7 +100,6 @@ namespace proyecto_tdp_2.MVVM.View
             this.Close();
         }
 
-        // Subir avatar
         private void BtnUploadPhoto_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new OpenFileDialog()
@@ -110,33 +133,62 @@ namespace proyecto_tdp_2.MVVM.View
             AvatarEllipse.Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/man.png"))) { Stretch = Stretch.UniformToFill };
         }
 
-        // Guardar / validar
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Recolectar valores
-                string fullName = tbFullName.Text.Trim();
-                int selectedServiceId = (int)(cbCompany.SelectedValue ?? 0);
-                string phone = tbPhone.Text.Trim();
+                string nombre = tbFullName.Text.Trim();
+                string apellido = tbSurName.Text.Trim();
                 string email = tbEmail.Text.Trim();
-                string role = (cbRole.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Operador";
-                string zone = (cbZone.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
-                bool isActive = chkActive.IsChecked == true;
-                bool sendWelcome = chkSendWelcome.IsChecked == true;
                 string password = pbPassword.Password;
                 string confirm = pbConfirm.Password;
+                string telefono = tbPhone.Text.Trim();
+                string dni = tbDNI.Text.Trim();
+                string cuit = tbCUIT.Text.Trim();
+                int idProvincia = (int)(cbProvince.SelectedValue ?? 0);
+                int idServicio = (int)(cbCompany.SelectedValue ?? 0);
 
-                if (selectedServiceId == 0)
+                string rolTexto = (cbRole.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Operador";
+                int idRol = rolTexto switch
                 {
-                    MessageBox.Show("Debes seleccionar una empresa.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    "SuperAdmin" => 1,
+                    "Operador" => 2,
+                    "Supervisor" => 3,
+                    _ => 2
+                };
+
+                if (string.IsNullOrWhiteSpace(nombre))
+                {
+                    MessageBox.Show("El nombre es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    tbFullName.Focus();
                     return;
                 }
-                // Validaciones
-                if (string.IsNullOrWhiteSpace(fullName))
+
+                if (string.IsNullOrWhiteSpace(apellido))
                 {
-                    MessageBox.Show("El nombre completo es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    tbFullName.Focus();
+                    MessageBox.Show("El apellido es obligatorio.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    tbSurName.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(dni) || dni.Length != 8)
+                {
+                    MessageBox.Show("El DNI debe tener 8 dígitos.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    tbDNI.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(cuit) || cuit.Length != 11)
+                {
+                    MessageBox.Show("El CUIT debe tener 11 dígitos.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    tbCUIT.Focus();
+                    return;
+                }
+
+                if (idServicio == 0)
+                {
+                    MessageBox.Show("Debes seleccionar una empresa.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    cbCompany.Focus();
                     return;
                 }
 
@@ -161,33 +213,32 @@ namespace proyecto_tdp_2.MVVM.View
                     return;
                 }
 
-                // Abrir conexión desde App.config
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
-                    string query = @"INSERT INTO Usuario (nombre, email, password, telefono, rol, servicio) 
-                             VALUES (@nombre, @correo, @pass, @telefono, @rol, @servicio)";
+                    string query = @"INSERT INTO Usuario 
+                                (nombre, apellido, email, password, telefono, dni, cuit, id_rol, id_servicio, id_provincia)
+                                VALUES 
+                                (@nombre, @apellido, @correo, @pass, @telefono, @dni, @cuit, @rol, @servicio, @provincia)";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@nombre", fullName);
+                        command.Parameters.AddWithValue("@nombre", nombre);
+                        command.Parameters.AddWithValue("@apellido", apellido);
                         command.Parameters.AddWithValue("@correo", email);
                         command.Parameters.AddWithValue("@pass", password);
-                        command.Parameters.AddWithValue("@telefono", phone);
-
-                        if (role == "Operador")
-                            command.Parameters.AddWithValue("@rol", 1);
-                        else
-                            command.Parameters.AddWithValue("@rol", 2);
-
-                        command.Parameters.AddWithValue("@servicio", selectedServiceId);
+                        command.Parameters.AddWithValue("@telefono", telefono);
+                        command.Parameters.AddWithValue("@dni", dni);
+                        command.Parameters.AddWithValue("@cuit", cuit);
+                        command.Parameters.AddWithValue("@rol", idRol);
+                        command.Parameters.AddWithValue("@servicio", idServicio);
+                        command.Parameters.AddWithValue("@provincia", idProvincia);
 
                         int rows = command.ExecuteNonQuery();
+
                         if (rows > 0)
                         {
-
-
                             MessageBox.Show("Usuario creado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                             this.Close();
                         }
@@ -208,24 +259,6 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
-
-        private bool CrearUsuarioEnServicio(object usuarioDto, string password)
-        {
-            // Ejemplo: aquí deberías:
-            //  - Validar más (email único)
-            //  - Enviar password de forma segura (hash en servidor o uso de Identity)
-            //  - Guardar avatar (subir a storage o guardar ruta)
-            // Retornar true si se creó correctamente
-            try
-            {
-                // Simulación rápida
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
@@ -305,12 +338,17 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
-        private void tbFullName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void tbName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // Regex: solo letras y espacios (NO números)
             Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
 
-            // Si el texto NO cumple, se bloquea
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void tbSurName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
+
             e.Handled = regex.IsMatch(e.Text);
         }
 
