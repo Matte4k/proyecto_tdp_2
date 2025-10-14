@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="proyecto_tdp_2.MVVM.View.ClaimView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation">
+
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="RoundedButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="10,5" />
+        </Style>
+    </UserControl.Resources>
+
+
+    <Grid Grid.Row="1">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel >
+                <TextBlock Text="Gestión de Reclamos" FontWeight="Bold" FontSize="24" Margin="0,0,0,10" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="250" />
+                        <ColumnDefinition Width="*" MinWidth="250" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="20" BorderBrush="#fbfaf9" BorderThickness="1" Margin="0,0,20,0">
+                        <StackPanel>
+                            <TextBlock Text="Crear Nuevo Reclamo" FontWeight="Bold" FontSize="18" Margin="0,0,0,20" />
+                            <TextBlock Text="Tipo de Servicio:" />
+                            <ComboBox x:Name="cbTipoServicio"
+                                      Margin="0,5,0,10"
+                                      Height="35"
+                                      MinWidth="120"
+                                      VerticalContentAlignment="Center"
+                                      SelectionChanged="cbTipoServicio_SelectionChanged">
+                                <ComboBoxItem IsEnabled="False" IsSelected="True" Foreground="Gray">Seleccione un tipo</ComboBoxItem>
+                                <ComboBoxItem Content="Agua" />
+                                <ComboBoxItem Content="Luz" />
+                                <ComboBoxItem Content="Calles" />
+                            </ComboBox>
+                            <TextBlock Text="Subtipo:" />
+                            <ComboBox x:Name="cbSubtipo"
+                                  Margin="0,5,0,20"
+                                  Height="35"
+                                  MinWidth="120"
+                                  VerticalContentAlignment="Center"
+                                  IsEnabled="False"
+                                   />
+                            <TextBlock Text="Ubicación:" />
+                            <TextBox Margin="0,5,0,10" Height="35" MinWidth="120" VerticalContentAlignment="Center" />
+                            <Border Height="150" Background="#F0F0F0" CornerRadius="5" Margin="0,0,0,20">
+                                <gmaps:GMapControl x:Name="mapView" Loaded="mapView_Loaded" />
+                            </Border>
+                            <TextBlock Text="Cargar Fotos:" />
+                            
+                            <Button Content="Elegir archivos" Margin="0,5,0,20" Height="30" MinWidth="120" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Click="BtnCargarFotos_Click" Style="{StaticResource RoundedButton}"/>
+                            <ItemsControl x:Name="PreviewPanel">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="5">
+                                            <Border BorderThickness="1" BorderBrush="Gray" CornerRadius="5">
+                                                <Image Source="{Binding}" Width="100" Height="100" Stretch="UniformToFill" />
+                                            </Border>
+                                            <Button Content="X" Width="20" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Red" Foreground="White" FontWeight="Bold" Click="BtnEliminarFoto_Click" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Text="Descripción:" />
+                            <TextBox Margin="0,5,0,20" Height="80" MinWidth="120" TextWrapping="Wrap" AcceptsReturn="True" />
+                            <Button Content="Enviar Reclamo" Background="#0066FF" Foreground="White" BorderThickness="0" HorizontalAlignment="Left" Margin="10" Width="150" MinWidth="120"  Style="{StaticResource RoundedButton}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="20" BorderBrush="#fbfaf9" BorderThickness="1" >
+                        <StackPanel>
+                            <TextBlock Text="Mis Reclamos" FontWeight="Bold" FontSize="18" Margin="0,0,0,20" />
+                            <Border Background="#FFF5E5" CornerRadius="10" Padding="10" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="#12345" FontWeight="Bold" />
+                                    <TextBlock Text="Tipo: Agua" />
+                                    <TextBlock Text="Ubicación: Calle Falsa 123" />
+                                    <TextBlock Text="15/07/2024" />
+                                    <TextBlock Text="Pendiente" Foreground="Orange" FontWeight="Bold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#E6F0FF" CornerRadius="10" Padding="10" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="#12344" FontWeight="Bold" />
+                                    <TextBlock Text="Tipo: Calles" />
+                                    <TextBlock Text="Ubicación: Av. Siempreviva 742" />
+                                    <TextBlock Text="12/07/2024" />
+                                    <TextBlock Text="En Curso" Foreground="Blue" FontWeight="Bold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#E5F9E7" CornerRadius="10" Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="#12343" FontWeight="Bold" />
+                                    <TextBlock Text="Tipo: Luz" />
+                                    <TextBlock Text="Ubicación: Calle del Sol 456" />
+                                    <TextBlock Text="10/07/2024" />
+                                    <TextBlock Text="Resuelto" Foreground="Green" FontWeight="Bold" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

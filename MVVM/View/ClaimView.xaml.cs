@@ -7,24 +7,26 @@ using System.Windows.Media.Imaging;
 
 namespace proyecto_tdp_2.MVVM.View
 {
-    public partial class DashboardView : Window
+    public partial class ClaimView : UserControl
     {
         private ObservableCollection<BitmapImage> _imagenes;
-        public string NombreUsuario { get; set; }
-        public string RolUsuario { get; set; }
+        public string NombreUsuario { get; set; } = string.Empty;
+        public string RolUsuario { get; set; } = string.Empty;
 
-        public DashboardView()
+        private readonly Dictionary<string, List<string>> _subtiposPorTipo;
+
+        public ClaimView()
         {
             InitializeComponent();
             _imagenes = new ObservableCollection<BitmapImage>();
             PreviewPanel.ItemsSource = _imagenes;
 
-            txtNombre.Text = Session.Nombre;
-            txtRol.Text = Session.Rol;
-            if (Session.Rol != "SuperAdmin")
+            _subtiposPorTipo = new Dictionary<string, List<string>>
             {
-                rbAgregarOperador.Visibility = Visibility.Collapsed;
-            }
+                { "Agua", new List<string> { "Pérdida de agua", "Corte de suministro", "Baja presión", "Medidor roto" } },
+                { "Luz", new List<string> { "Luminaria descompuesta", "Poste caído", "Corte de energía", "Cable suelto" } },
+                { "Calles", new List<string> { "Bache", "Inundación", "Semáforo roto", "Contenedor volcado" } }
+            };
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)
@@ -59,45 +61,6 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
-        private void BtnExit_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
-        private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                try
-                {
-                    this.DragMove();
-                }
-                catch (InvalidOperationException)
-                {
-                }
-            }
-        }
-
-        private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 2)
-            {
-                ToggleMaximizeRestore();
-            }
-        }
-
-        private void ToggleMaximizeRestore()
-        {
-            this.WindowState = this.WindowState == WindowState.Normal
-                               ? WindowState.Maximized
-                               : WindowState.Normal;
-        }
-
         private void BtnEliminarFoto_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.DataContext is BitmapImage img)
@@ -122,25 +85,25 @@ namespace proyecto_tdp_2.MVVM.View
             mapView.DragButton = MouseButton.Left;
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void cbTipoServicio_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MisReclamosView reclamosView = new MisReclamosView();
-            reclamosView.Show();
-            this.Close();
-        }
+            if (cbTipoServicio.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string tipo = selectedItem.Content.ToString();
 
-        private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
-        {
-            ProfileView perfil = new ProfileView();
-            perfil.Show();
-            this.Close();
-        }
+                if (_subtiposPorTipo.ContainsKey(tipo))
+                {
+                    cbSubtipo.ItemsSource = _subtiposPorTipo[tipo];
+                    cbSubtipo.IsEnabled = true;
+                    cbSubtipo.SelectedIndex = -1;
+                }
+                else
+                {
+                    cbSubtipo.ItemsSource = null;
+                    cbSubtipo.IsEnabled = false;
+                }
 
-        private void RadioButton_Checked_2(object sender, RoutedEventArgs e)
-        {
-            RegisterView register = new RegisterView();
-            register.Show();
-            this.Close();
+            }
         }
     }
 }

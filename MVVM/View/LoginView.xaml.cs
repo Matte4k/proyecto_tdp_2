@@ -81,7 +81,7 @@ namespace proyecto_tdp_2.MVVM.View
                                 Session.Dni = reader["dni"]?.ToString() ?? string.Empty;
                                 Session.Cuit = reader["cuit"]?.ToString() ?? string.Empty;
 
-                                DashboardView home = new DashboardView();
+                                MainView home = new MainView();
                                 home.Show();
                                 this.Close();
                             }

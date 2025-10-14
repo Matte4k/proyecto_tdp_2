@@ -112,12 +112,13 @@
                                          Margin="10,5"
                                          Style="{StaticResource MenuButtonTheme}"
                                          Checked="RadioButton_Checked_1" />
-                            <RadioButton Content="Agregar Operador"
-                                         Height="40"
-                                         FontSize="14"
-                                         Margin="10,5"
-                                         Style="{StaticResource MenuButtonTheme}"
-                                         Checked="RadioButton_Checked_2" />
+                            <RadioButton x:Name="rbAgregarOperador"
+                                 Content="Agregar Operador"
+                                 Height="40"
+                                 FontSize="14"
+                                 Margin="10,5"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Checked="RadioButton_Checked_2" />     
                         </StackPanel>
 
                         <StackPanel Grid.Row="2"

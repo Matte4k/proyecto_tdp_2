@@ -56,7 +56,6 @@ namespace proyecto_tdp_2.MVVM.View
         private void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
             ProfileView perfil = new ProfileView();
-            perfil.Show();
             this.Close();
         }
 
@@ -114,7 +113,6 @@ namespace proyecto_tdp_2.MVVM.View
                         {
                             MessageBox.Show("Perfil actualizado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                             ProfileView perfil = new ProfileView();
-                            perfil.Show();
                             this.Close();
                         }
                         else

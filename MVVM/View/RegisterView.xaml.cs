@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace proyecto_tdp_2.MVVM.View
 {
-    public partial class RegisterView : Window
+    public partial class RegisterView : UserControl
     {
         private string _avatarFilePath = string.Empty;
         string connectionString = ConfigurationManager.ConnectionStrings["MiReclamoDB"].ConnectionString;
@@ -78,26 +78,6 @@ namespace proyecto_tdp_2.MVVM.View
             {
                 MessageBox.Show("Error al cargar provincias: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-
-        private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                try { this.DragMove(); }
-                catch (InvalidOperationException) { }
-            }
-        }
-
-
-        private void BtnMinimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
-        private void BtnExit_Click(object sender, RoutedEventArgs e) => this.Close();
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            DashboardView dashboard = new DashboardView();
-            dashboard.Show();
-            this.Close();
         }
 
         private void BtnUploadPhoto_Click(object sender, RoutedEventArgs e)
@@ -240,7 +220,6 @@ namespace proyecto_tdp_2.MVVM.View
                         if (rows > 0)
                         {
                             MessageBox.Show("Usuario creado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                            this.Close();
                         }
                         else
                         {
@@ -259,105 +238,52 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
-
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            DashboardView home = new DashboardView();
-            home.Show();
-            this.Close();
-        }
-
-        private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
-        {
-            MisReclamosView reclamos = new MisReclamosView();
-            reclamos.Show();
-            this.Close();
-        }
-
-        private void RadioButton_Checked_2(object sender, RoutedEventArgs e)
-        {
-            ProfileView perfil = new ProfileView();
-            perfil.Show();
-            this.Close();
+            tbFullName.Clear();
+            tbSurName.Clear();
+            tbEmail.Clear();
+            pbPassword.Clear();
+            pbConfirm.Clear();
+            tbPhone.Clear();
+            tbDNI.Clear();
+            tbCUIT.Clear();
+            cbCompany.SelectedIndex = -1;
+            cbProvince.SelectedIndex = -1;
+            cbRole.SelectedIndex = 0;
         }
 
         private void tbDNI_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
-
-            // Regex: solo dígitos
             Regex regex = new Regex("[^0-9]+");
-
-            // Bloquea si no es número
-            if (regex.IsMatch(e.Text))
-            {
-                e.Handled = true;
-                return;
-            }
-
-            // Bloquea si ya hay 8 dígitos
-            if (textBox != null && textBox.Text.Length >= 8)
-            {
-                e.Handled = true;
-            }
+            if (regex.IsMatch(e.Text)) { e.Handled = true; return; }
+            if (textBox != null && textBox.Text.Length >= 8) e.Handled = true;
         }
 
         private void tbCUIT_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
-
-            // Regex: solo dígitos
             Regex regex = new Regex("[^0-9]+");
-
-            // Bloquea si no es número
-            if (regex.IsMatch(e.Text))
-            {
-                e.Handled = true;
-                return;
-            }
-
-            // Bloquea si ya hay 11 dígitos
-            if (textBox != null && textBox.Text.Length >= 11)
-            {
-                e.Handled = true;
-            }
+            if (regex.IsMatch(e.Text)) { e.Handled = true; return; }
+            if (textBox != null && textBox.Text.Length >= 11) e.Handled = true;
         }
 
         private void tbPhone_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            var textBox = sender as TextBox;
-
-            // Regex: solo dígitos
             Regex regex = new Regex("[^0-9]+");
-
-            // Bloquea si no es número
-            if (regex.IsMatch(e.Text))
-            {
-                e.Handled = true;
-                return;
-            }
+            e.Handled = regex.IsMatch(e.Text);
         }
 
         private void tbName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
-
             e.Handled = regex.IsMatch(e.Text);
         }
 
         private void tbSurName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
-
-            e.Handled = regex.IsMatch(e.Text);
-        }
-
-        private void tbCompany_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            // Regex: solo letras y espacios (NO números)
-            Regex regex = new Regex("[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ ]+");
-
-            // Si el texto NO cumple, se bloquea
             e.Handled = regex.IsMatch(e.Text);
         }
     }

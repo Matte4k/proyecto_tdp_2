@@ -4,9 +4,16 @@ namespace proyecto_tdp_2.MVVM.View
 {
     public partial class DetalleReclamo : Window
     {
+
+        public string NombreUsuario { get; set; } = string.Empty;
+        public string RolUsuario { get; set; } = string.Empty;
         public DetalleReclamo()
         {
             InitializeComponent();
+            if (Session.Rol != "SuperAdmin")
+            {
+                rbAgregarOperador.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void BtnExit_Click(object sender, RoutedEventArgs e)
@@ -28,14 +35,12 @@ namespace proyecto_tdp_2.MVVM.View
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             MisReclamosView reclamosView = new MisReclamosView();
-            reclamosView.Show();
             this.Close();
         }
 
         private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
         {
             ProfileView perfil = new ProfileView();
-            perfil.Show();
             this.Close();
         }
 
@@ -47,14 +52,12 @@ namespace proyecto_tdp_2.MVVM.View
         private void BtnVolver_Click(object sender, RoutedEventArgs e)
         {
             MisReclamosView misReclamos = new MisReclamosView();
-            misReclamos.Show();
             this.Close();
         }
 
         private void RadioButton_Checked_3(object sender, RoutedEventArgs e)
         {
             DashboardView home = new DashboardView();
-            home.Show();
             this.Close();
         }
     }
