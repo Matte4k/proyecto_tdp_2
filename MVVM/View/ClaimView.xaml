@@ -35,27 +35,36 @@
                             <ComboBox x:Name="cbTipoServicio"
                                       Margin="0,5,0,10"
                                       Height="35"
-                                      MinWidth="120"
-                                      VerticalContentAlignment="Center"
-                                      SelectionChanged="cbTipoServicio_SelectionChanged">
-                                <ComboBoxItem IsEnabled="False" IsSelected="True" Foreground="Gray">Seleccione un tipo</ComboBoxItem>
-                                <ComboBoxItem Content="Agua" />
-                                <ComboBoxItem Content="Luz" />
-                                <ComboBoxItem Content="Calles" />
+                                      SelectionChanged="cbTipoServicio_SelectionChanged"
+                                      VerticalContentAlignment="Center">           
+                                <ComboBox.ItemsSource>
+                                    <x:Array Type="{x:Type sys:String}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                        <sys:String>Seleccione un tipo</sys:String>
+                                        <sys:String>Agua</sys:String>
+                                        <sys:String>Luz</sys:String>
+                                        <sys:String>Calles</sys:String>
+                                    </x:Array>
+                                </ComboBox.ItemsSource>
                             </ComboBox>
                             <TextBlock Text="Subtipo:" />
                             <ComboBox x:Name="cbSubtipo"
-                                  Margin="0,5,0,20"
-                                  Height="35"
-                                  MinWidth="120"
-                                  VerticalContentAlignment="Center"
-                                  IsEnabled="False"
-                                   />
-                            <TextBlock Text="Ubicación:" />
-                            <TextBox Margin="0,5,0,10" Height="35" MinWidth="120" VerticalContentAlignment="Center" />
-                            <Border Height="150" Background="#F0F0F0" CornerRadius="5" Margin="0,0,0,20">
-                                <gmaps:GMapControl x:Name="mapView" Loaded="mapView_Loaded" />
-                            </Border>
+                                      Margin="0,5,0,20"
+                                      Height="35"
+                                      MinWidth="120"
+                                      VerticalContentAlignment="Center"
+                                      IsEnabled="False"/>
+                            <StackPanel >
+                                <TextBlock Text="Ubicación:" />
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+                                    <TextBox x:Name="txtDireccion" Width="250" Height="35" VerticalContentAlignment="Center" />
+                                    <Button Content="Buscar" Width="100" Margin="10,0,0,0" Click="btnBuscar_Click"/>
+                                </StackPanel>
+
+                                <Border Height="300" Background="#F0F0F0" CornerRadius="5" Margin="0,0,0,20">
+                                    <gmaps:GMapControl x:Name="mapView" Loaded="mapView_Loaded" MouseDoubleClick="mapView_MouseDoubleClick"/>
+                                </Border>
+                                <TextBlock x:Name="lblCoordenadas" FontWeight="Bold" />
+                            </StackPanel>
                             <TextBlock Text="Cargar Fotos:" />
                             
                             <Button Content="Elegir archivos" Margin="0,5,0,20" Height="30" MinWidth="120" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Click="BtnCargarFotos_Click" Style="{StaticResource RoundedButton}"/>

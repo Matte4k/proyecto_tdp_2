@@ -1,9 +1,16 @@
-﻿using Microsoft.Win32;
+﻿using GMap.NET;
+using GMap.NET.MapProviders;
+using GMap.NET.WindowsPresentation;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
 
 namespace proyecto_tdp_2.MVVM.View
 {
@@ -14,6 +21,8 @@ namespace proyecto_tdp_2.MVVM.View
         public string RolUsuario { get; set; } = string.Empty;
 
         private readonly Dictionary<string, List<string>> _subtiposPorTipo;
+
+        private GMapMarker? currentMarker;
 
         public ClaimView()
         {
@@ -68,28 +77,108 @@ namespace proyecto_tdp_2.MVVM.View
                 _imagenes.Remove(img);
             }
         }
+
         private void mapView_Loaded(object sender, RoutedEventArgs e)
         {
-            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
-            // Seleccion de proveedor
-            mapView.MapProvider = GMap.NET.MapProviders.OpenStreetMapProvider.Instance;
+            GMaps.Instance.Mode = AccessMode.ServerAndCache;
+            mapView.MapProvider = GoogleMapProvider.Instance;
             mapView.MinZoom = 2;
-            mapView.MaxZoom = 17;
-            // Zoom Global
-            mapView.Zoom = 2;
-            // Permite hacer zoom usando la rueda del mouse
-            mapView.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
-            // Permite arrastrar el mapa
+            mapView.MaxZoom = 18;
+            mapView.Zoom = 5;
+            mapView.Position = new PointLatLng(-34.6037, -58.3816);
+
+            mapView.MouseWheelZoomType = MouseWheelZoomType.MousePositionAndCenter;
             mapView.CanDragMap = true;
-            // Arrastra con BIM
             mapView.DragButton = MouseButton.Left;
         }
 
+        private void mapView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var point = e.GetPosition(mapView);
+            var latLng = mapView.FromLocalToLatLng((int)point.X, (int)point.Y);
+            AgregarMarcador(latLng.Lat, latLng.Lng);
+        }
+
+        private void AgregarMarcador(double lat, double lng)
+        {
+            if (currentMarker != null)
+                mapView.Markers.Remove(currentMarker);
+
+            var posicion = new PointLatLng(lat, lng);
+
+            currentMarker = new GMapMarker(posicion)
+            {
+                Shape = new System.Windows.Shapes.Ellipse
+                {
+                    Width = 12,
+                    Height = 12,
+                    Stroke = Brushes.Red,
+                    StrokeThickness = 2,
+                    Fill = Brushes.OrangeRed
+                }
+            };
+
+            mapView.Markers.Add(currentMarker);
+            mapView.Position = posicion;
+            mapView.Zoom = 15;
+
+            lblCoordenadas.Text = $"Latitud: {lat:F6}, Longitud: {lng:F6}";
+        }
+
+        private async void btnBuscar_Click(object sender, RoutedEventArgs e)
+        {
+            string direccion = txtDireccion.Text.Trim();
+            if (string.IsNullOrEmpty(direccion))
+            {
+                MessageBox.Show("Ingrese una dirección para buscar.");
+                return;
+            }
+
+            try
+            {
+                var (lat, lng) = await ObtenerCoordenadasDesdeDireccion(direccion);
+
+                if (lat != 0 && lng != 0)
+                    AgregarMarcador(lat, lng);
+                else
+                    MessageBox.Show("No se encontró la dirección.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al buscar dirección: {ex.Message}");
+            }
+        }
+
+        private async Task<(double lat, double lng)> ObtenerCoordenadasDesdeDireccion(string direccion)
+        {
+            using var client = new HttpClient();
+            string url = $"https://api.mapbox.com/geocoding/v5/mapbox.places/{Uri.EscapeDataString(direccion)}.json?access_token=pk.eyJ1Ijoia2FpYmFiZW5qYSIsImEiOiJjbGRsdGQ1bDcwMnAxM3BxdW4zMTlsaHEyIn0.DZbhRsGZ7aLBnd1LdN6M5A";
+            var response = await client.GetStringAsync(url);
+            var json = JsonSerializer.Deserialize<JsonElement>(response);
+
+            var features = json.GetProperty("features");
+            if (features.GetArrayLength() > 0)
+            {
+                var coords = features[0].GetProperty("center");
+                double lng = coords[0].GetDouble();
+                double lat = coords[1].GetDouble();
+                return (lat, lng);
+            }
+
+            return (0, 0);
+        }
+
+
         private void cbTipoServicio_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbTipoServicio.SelectedItem is ComboBoxItem selectedItem)
+            if (cbTipoServicio.SelectedItem is string tipo)
             {
-                string tipo = selectedItem.Content.ToString();
+                if (tipo == "Seleccione un tipo")
+                {
+                    cbSubtipo.ItemsSource = null;
+                    cbSubtipo.IsEnabled = false;
+                    return;
+                }
 
                 if (_subtiposPorTipo.ContainsKey(tipo))
                 {
@@ -97,12 +186,6 @@ namespace proyecto_tdp_2.MVVM.View
                     cbSubtipo.IsEnabled = true;
                     cbSubtipo.SelectedIndex = -1;
                 }
-                else
-                {
-                    cbSubtipo.ItemsSource = null;
-                    cbSubtipo.IsEnabled = false;
-                }
-
             }
         }
     }

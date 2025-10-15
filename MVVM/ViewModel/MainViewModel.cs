@@ -32,7 +32,7 @@ namespace proyecto_tdp_2.MVVM.ViewModel
 
         public MainViewModel()
         {
-            CurrentView = new DashboardView();
+            CurrentView = new ClaimView();
 
         }
 

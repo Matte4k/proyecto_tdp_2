@@ -57,7 +57,7 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void RadioButton_Checked_3(object sender, RoutedEventArgs e)
         {
-            DashboardView home = new DashboardView();
+            ClaimView home = new ClaimView();
             this.Close();
         }
     }
