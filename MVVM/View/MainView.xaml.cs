@@ -14,6 +14,7 @@ namespace proyecto_tdp_2.MVVM.View
             };
             txtNombre.Text = Session.Nombre; txtRol.Text = Session.Rol;
             if (Session.Rol != "SuperAdmin") rbAgregarOperador.Visibility = Visibility.Collapsed;
+            if (Session.Rol != "SuperAdmin") rbAgregarTipoReclamo.Visibility = Visibility.Collapsed;
         }
         private void Nav_CrearReclamo(object sender, RoutedEventArgs e) { MainContent.Content = new ClaimView(); }
         private void Nav_MisReclamos(object sender, RoutedEventArgs e) { MainContent.Content = new MisReclamosView(); }
@@ -59,6 +60,10 @@ namespace proyecto_tdp_2.MVVM.View
 
                     case "Agregar Operador":
                         MainContent.Content = new RegisterView();
+                        break;
+
+                    case "Agregar Tipo de Reclamo":
+                        MainContent.Content = new NewType();
                         break;
 
                     default:

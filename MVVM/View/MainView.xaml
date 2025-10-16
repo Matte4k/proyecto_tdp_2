@@ -65,7 +65,7 @@
                                  Margin="10,5"
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
-                            <RadioButton 
+                            <RadioButton x:Name="rbAgregarTipoReclamo"
                                  Content="Agregar Tipo de Reclamo"
                                  Height="40"
                                  FontSize="14"

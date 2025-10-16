@@ -33,7 +33,6 @@
                        FontWeight="Bold"
                        FontSize="24"
                        Margin="0,0,0,20" />
-
             <Border Background="White"
                     CornerRadius="10"
                     Padding="30"
