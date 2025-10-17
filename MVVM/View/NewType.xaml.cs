@@ -19,6 +19,8 @@ namespace proyecto_tdp_2.MVVM.View
                 this.IsEnabled = false;
                 return;
             }
+
+            CargarTiposPadre();
         }
 
         private void CargarTiposPadre()
@@ -28,7 +30,7 @@ namespace proyecto_tdp_2.MVVM.View
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "SELECT id_tipo, nombre FROM TipoReclamo WHERE subtipo_reclamo IS NULL";
+                    string query = "SELECT id_tipo, nombre, subtipo_reclamo FROM TipoReclamo WHERE subtipo_reclamo IS NULL";
                     SqlCommand cmd = new SqlCommand(query, conn);
 
                     DataTable dt = new DataTable();
@@ -47,9 +49,11 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void CbIsSubType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbIsSubType.SelectedItem is ComboBoxItem item)
+            if (cbIsSubType?.SelectedItem is ComboBoxItem item && TypePanel != null && item.Content != null)
             {
-                Type.Visibility = item.Content.ToString() == "Si" ? Visibility.Visible : Visibility.Collapsed;
+                TypePanel.Visibility = item.Content.ToString() == "Si"
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
         }
 
@@ -74,22 +78,22 @@ namespace proyecto_tdp_2.MVVM.View
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string nombre = NombreReclamo.Text.Trim();
-                    string descripcion = DescReclamo.Text.Trim();
-
+                    string query = "INSERT INTO TipoReclamo (nombre, descripcion, subtipo_reclamo) " +
+                                   "VALUES (@nombre, @descripcion, @subtipo_reclamo)";
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand("sp_InsertarTipoReclamo", conn);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@nombre", nombre);
+                        cmd.Parameters.AddWithValue("@descripcion", descripcion);
+                        if (idPadre.HasValue)
+                            cmd.Parameters.AddWithValue("@subtipo_reclamo", idPadre.Value);
+                        else
+                            cmd.Parameters.AddWithValue("@subtipo_reclamo", DBNull.Value);
+                        cmd.ExecuteNonQuery();
+                    }
 
-                    cmd.Parameters.AddWithValue("@id_usuario", Session.UserId);
-                    cmd.Parameters.AddWithValue("@nombre", nombre);
-                    cmd.Parameters.AddWithValue("@descripcion", descripcion);
-                    cmd.Parameters.Add("@subtipo_reclamo", SqlDbType.Int).Value = (object?)idPadre ?? DBNull.Value;
-
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Tipo de reclamo creado correctamente.", "Éxito",
+                    MessageBox.Show("Tipo de reclamo creado exitosamente.", "Éxito",
                                     MessageBoxButton.OK, MessageBoxImage.Information);
-
                     LimpiarCampos();
                     CargarTiposPadre();
                 }
@@ -114,7 +118,7 @@ namespace proyecto_tdp_2.MVVM.View
             DescReclamo.Text = string.Empty;
             cbIsSubType.SelectedIndex = 0;
             TypeCombo.SelectedIndex = -1;
-            Type.Visibility = Visibility.Collapsed;
+            TypePanel.Visibility = Visibility.Collapsed;
         }
     }
 }

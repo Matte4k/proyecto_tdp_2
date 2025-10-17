@@ -57,25 +57,28 @@ d:DesignWidth="1250">
                                  VerticalContentAlignment="Center"
                                   />
 
-                        <TextBlock Text="Es un Subtipo de reclamo?" Margin="0,5" />
-                        <ComboBox x:Name="cbIsSubType"
-                                  Width="350"
-                                  Height="30"
-                                  Margin="0,0,0,10"
-                                  VerticalContentAlignment="Center"
-                                  >
-                            <ComboBoxItem Content="No" IsSelected="True"/>
-                            <ComboBoxItem Content="Si" />
-                        </ComboBox>
-                        <StackPanel x:Name="Type" Visibility="Collapsed">
-                            <TextBlock Text="Seleccione el Tipo Correspondiente:" Margin="0,5" />
-                            <ComboBox x:Name="TypeCombo"
+                        <StackPanel>
+                            <TextBlock Text="Es un Subtipo de reclamo?" Margin="0,5" />
+                            <ComboBox x:Name="cbIsSubType"
                                       Width="350"
                                       Height="30"
                                       Margin="0,0,0,10"
                                       VerticalContentAlignment="Center"
-                                      DisplayMemberPath="nombre"
-                                      SelectedValuePath="id_tipo"/>
+                                      SelectionChanged="CbIsSubType_SelectionChanged">
+                                <ComboBoxItem Content="No" IsSelected="True"/>
+                                <ComboBoxItem Content="Si" />
+                            </ComboBox>
+
+                            <StackPanel x:Name="TypePanel" Visibility="Collapsed">
+                                <TextBlock Text="Seleccione el Tipo Correspondiente:" Margin="0,5" />
+                                <ComboBox x:Name="TypeCombo"
+                                          Width="350"
+                                          Height="30"
+                                          Margin="0,0,0,10"
+                                          VerticalContentAlignment="Center"
+                                          DisplayMemberPath="nombre"
+                                          SelectedValuePath="id_tipo"/>
+                            </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center"

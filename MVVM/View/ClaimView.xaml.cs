@@ -3,6 +3,7 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows;
@@ -20,8 +21,6 @@ namespace proyecto_tdp_2.MVVM.View
         public string NombreUsuario { get; set; } = string.Empty;
         public string RolUsuario { get; set; } = string.Empty;
 
-        private readonly Dictionary<string, List<string>> _subtiposPorTipo;
-
         private GMapMarker? currentMarker;
 
         public ClaimView()
@@ -29,13 +28,6 @@ namespace proyecto_tdp_2.MVVM.View
             InitializeComponent();
             _imagenes = new ObservableCollection<BitmapImage>();
             PreviewPanel.ItemsSource = _imagenes;
-
-            _subtiposPorTipo = new Dictionary<string, List<string>>
-            {
-                { "Agua", new List<string> { "Pérdida de agua", "Corte de suministro", "Baja presión", "Medidor roto" } },
-                { "Luz", new List<string> { "Luminaria descompuesta", "Poste caído", "Corte de energía", "Cable suelto" } },
-                { "Calles", new List<string> { "Bache", "Inundación", "Semáforo roto", "Contenedor volcado" } }
-            };
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)
@@ -67,6 +59,30 @@ namespace proyecto_tdp_2.MVVM.View
 
                     _imagenes.Add(img);
                 }
+            }
+        }
+
+        private void CargarTiposReclamos()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection("your_connection_string"))
+                {
+                    conn.Open();
+                    string query = "SELECT nombre FROM TipoReclamo WHERE subtipo_reclamo";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    List<string> tipos = new List<string>();
+                    while (reader.Read())
+                    {
+                        tipos.Add(reader.GetString(0));
+                    }
+                    cbTipoServicio.ItemsSource = tipos;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar tipos de reclamos: {ex.Message}");
             }
         }
 
@@ -171,21 +187,9 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void cbTipoServicio_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbTipoServicio.SelectedItem is string tipo)
+            if (cbTipoServicio.SelectedItem != null)
             {
-                if (tipo == "Seleccione un tipo")
-                {
-                    cbSubtipo.ItemsSource = null;
-                    cbSubtipo.IsEnabled = false;
-                    return;
-                }
 
-                if (_subtiposPorTipo.ContainsKey(tipo))
-                {
-                    cbSubtipo.ItemsSource = _subtiposPorTipo[tipo];
-                    cbSubtipo.IsEnabled = true;
-                    cbSubtipo.SelectedIndex = -1;
-                }
             }
         }
     }
