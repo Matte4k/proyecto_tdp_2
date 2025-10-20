@@ -3,6 +3,8 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Net.Http;
 using System.Text.Json;
@@ -17,6 +19,8 @@ namespace proyecto_tdp_2.MVVM.View
 {
     public partial class ClaimView : UserControl
     {
+        string connectionString = ConfigurationManager.ConnectionStrings["MiReclamoDB"].ConnectionString;
+
         private ObservableCollection<BitmapImage> _imagenes;
         public string NombreUsuario { get; set; } = string.Empty;
         public string RolUsuario { get; set; } = string.Empty;
@@ -28,6 +32,7 @@ namespace proyecto_tdp_2.MVVM.View
             InitializeComponent();
             _imagenes = new ObservableCollection<BitmapImage>();
             PreviewPanel.ItemsSource = _imagenes;
+            CargarTiposPadre();
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)
@@ -62,27 +67,55 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
-        private void CargarTiposReclamos()
+        private void CargarTiposPadre()
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection("your_connection_string"))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "SELECT nombre FROM TipoReclamo WHERE subtipo_reclamo";
+                    string query = "SELECT id_tipo, nombre, subtipo_reclamo FROM TipoReclamo WHERE subtipo_reclamo IS NULL";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    List<string> tipos = new List<string>();
-                    while (reader.Read())
-                    {
-                        tipos.Add(reader.GetString(0));
-                    }
-                    cbTipoServicio.ItemsSource = tipos;
+
+                    DataTable dt = new DataTable();
+                    dt.Load(cmd.ExecuteReader());
+
+                    TypeCombo.ItemsSource = dt.DefaultView;
+                    TypeCombo.DisplayMemberPath = "nombre";
+                    TypeCombo.SelectedValuePath = "id_tipo";
+                    
                 }
+                
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar tipos de reclamos: {ex.Message}");
+                MessageBox.Show($"Error al cargar tipos: {ex.Message}");
+            }
+        }
+
+
+        private void CargarSubTipo(int tipoReclamo)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT id_tipo, nombre, subtipo_reclamo FROM TipoReclamo WHERE subtipo_reclamo = @tipoReclamo";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@tipoReclamo", tipoReclamo);
+
+                    DataTable dt = new DataTable();
+                    dt.Load(cmd.ExecuteReader());
+
+                    cbSubtipo.ItemsSource = dt.DefaultView;
+                    cbSubtipo.DisplayMemberPath = "nombre";
+                    cbSubtipo.SelectedValuePath = "id_tipo";
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error al cargar tipos: {ex.Message}");
             }
         }
 
@@ -184,12 +217,12 @@ namespace proyecto_tdp_2.MVVM.View
             return (0, 0);
         }
 
-
-        private void cbTipoServicio_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void TypeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbTipoServicio.SelectedItem != null)
+            if (TypeCombo.SelectedValue != null)
             {
-
+                int idTipo = Convert.ToInt32(TypeCombo.SelectedValue);
+                CargarSubTipo(idTipo);
             }
         }
     }

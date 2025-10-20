@@ -32,27 +32,21 @@
                         <StackPanel>
                             <TextBlock Text="Crear Nuevo Reclamo" FontWeight="Bold" FontSize="18" Margin="0,0,0,20" />
                             <TextBlock Text="Tipo de Servicio:" />
-                            <ComboBox x:Name="cbTipoServicio"
-                                      Margin="0,5,0,10"
-                                      Height="35"
-                                      SelectionChanged="cbTipoServicio_SelectionChanged"
-                                      VerticalContentAlignment="Center">           
-                                <ComboBox.ItemsSource>
-                                    <x:Array Type="{x:Type sys:String}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-                                        <sys:String>Seleccione un tipo</sys:String>
-                                        <sys:String>Agua</sys:String>
-                                        <sys:String>Luz</sys:String>
-                                        <sys:String>Calles</sys:String>
-                                    </x:Array>
-                                </ComboBox.ItemsSource>
-                            </ComboBox>
+                            <ComboBox x:Name="TypeCombo"
+                                      Width="350"
+                                      Height="30"
+                                      HorizontalAlignment="Left"
+                                      VerticalContentAlignment="Center"
+                                      DisplayMemberPath="nombre"
+                                      SelectedValuePath="id_tipo"
+                                      SelectionChanged="TypeCombo_SelectionChanged"/>
                             <TextBlock Text="Subtipo:" />
                             <ComboBox x:Name="cbSubtipo"
                                       Margin="0,5,0,20"
                                       Height="35"
                                       MinWidth="120"
                                       VerticalContentAlignment="Center"
-                                      IsEnabled="False"/>
+                                      />
                             <StackPanel >
                                 <TextBlock Text="Ubicación:" />
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
