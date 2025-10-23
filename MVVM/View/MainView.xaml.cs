@@ -66,6 +66,17 @@ namespace proyecto_tdp_2.MVVM.View
                         MainContent.Content = new NewType();
                         break;
 
+                    case "Clientes":
+                        MainContent.Content = new RegisterClientView();
+                        break;
+
+                    case "Cerrar Sesión":
+                        MainContent.Content = null;
+                        LoginView loginView = new LoginView();
+                        loginView.Show();
+                        this.Close();
+                        break;
+
                     default:
                         MainContent.Content = null;
                         break;

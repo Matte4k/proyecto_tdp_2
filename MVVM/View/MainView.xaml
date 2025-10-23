@@ -93,6 +93,13 @@
                                  Margin="10,5"
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
+                            <RadioButton 
+                                 Content="Clientes"
+                                 Height="40"
+                                 FontSize="14"
+                                 Margin="10,5"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Checked="RadioButton_Checked" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10" VerticalAlignment="Bottom">
                             <Ellipse Width="50" Height="50">

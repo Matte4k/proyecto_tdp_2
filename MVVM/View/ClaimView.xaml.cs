@@ -83,9 +83,9 @@ namespace proyecto_tdp_2.MVVM.View
                     TypeCombo.ItemsSource = dt.DefaultView;
                     TypeCombo.DisplayMemberPath = "nombre";
                     TypeCombo.SelectedValuePath = "id_tipo";
-                    
+
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -113,7 +113,7 @@ namespace proyecto_tdp_2.MVVM.View
                     cbSubtipo.SelectedValuePath = "id_tipo";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar tipos: {ex.Message}");
             }
@@ -224,6 +224,11 @@ namespace proyecto_tdp_2.MVVM.View
                 int idTipo = Convert.ToInt32(TypeCombo.SelectedValue);
                 CargarSubTipo(idTipo);
             }
+        }
+
+        private void BtnEnviarReclamo_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
