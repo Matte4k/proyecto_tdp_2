@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using proyecto_tdp_2.Helpers;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 namespace proyecto_tdp_2.MVVM.View
@@ -8,11 +9,19 @@ namespace proyecto_tdp_2.MVVM.View
         public MainView()
         {
             InitializeComponent();
+
+            Navigator.OnNavigate += view =>
+            {
+                MainContent.Content = view;
+            };
+
             this.Loaded += (s, e) =>
             {
                 MainContent.Content = new ClaimView();
             };
-            txtNombre.Text = Session.Nombre; txtRol.Text = Session.Rol;
+
+            txtNombre.Text = Session.Nombre;
+            txtRol.Text = Session.Rol;
             if (Session.Rol != "SuperAdmin") rbAgregarOperador.Visibility = Visibility.Collapsed;
             if (Session.Rol != "SuperAdmin") rbAgregarTipoReclamo.Visibility = Visibility.Collapsed;
         }

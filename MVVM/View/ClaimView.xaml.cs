@@ -25,6 +25,10 @@ namespace proyecto_tdp_2.MVVM.View
         public string NombreUsuario { get; set; } = string.Empty;
         public string RolUsuario { get; set; } = string.Empty;
 
+        private DataTable _clientesDT = new DataTable();
+
+        private DataRowView? _clienteSeleccionado;
+
         private GMapMarker? currentMarker;
 
         public ClaimView()
@@ -33,6 +37,7 @@ namespace proyecto_tdp_2.MVVM.View
             _imagenes = new ObservableCollection<BitmapImage>();
             PreviewPanel.ItemsSource = _imagenes;
             CargarTiposPadre();
+            CargarClientes();
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)
@@ -116,6 +121,66 @@ namespace proyecto_tdp_2.MVVM.View
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar tipos: {ex.Message}");
+            }
+        }
+
+        private void CargarClientes()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT id_cliente, dni FROM Cliente";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    _clientesDT.Clear();
+                    _clientesDT.Load(cmd.ExecuteReader());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar clientes: {ex.Message}");
+            }
+        }
+
+        private void txtBuscarCliente_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string filtro = txtBuscarCliente.Text.Trim();
+
+            if (string.IsNullOrEmpty(filtro))
+            {
+                lstClientes.Visibility = Visibility.Collapsed;
+                return
+            }
+
+            var resultados = _clientesDT.AsEnumerable()
+                .Where(row => row["dni"].ToString().StartsWith(filtro))
+                .Take(10);
+
+            if (resultados.Any())
+            {
+                lstClientes.ItemsSource = resultados.
+                    .Select(row => new { id_cliente = row["id_cliente"], dni = row["dni"].toString() })
+                    .ToList();
+
+                lstClientes.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                lstClientes.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void lstResultadosClientes_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (lstClientes.SelectedItems != null)
+            {
+                dynamic item = lstClientes.SelectedItem;
+                txtBuscarCliente.Text = item.dni;
+                lstClientes.Visibility = Visibility.Collapsed;
+
+                _clienteSeleccionado = _clientesDT.AsEnumerable()
+                    .FirstOrDefault(r => r["id_cliente"].ToString() == item.id_cliente.ToString());
             }
         }
 
@@ -230,5 +295,7 @@ namespace proyecto_tdp_2.MVVM.View
         {
 
         }
+
+        private void
     }
 }

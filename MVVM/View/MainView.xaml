@@ -13,7 +13,7 @@
         Background="#01FFFFFF" 
         UseLayoutRounding="True">
 
-    <Border CornerRadius="20" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" Padding="0" SnapsToDevicePixels="True" >
+    <Border CornerRadius="20" Background="#F8FAFC" BorderBrush="#E0E0E0" BorderThickness="1" Padding="0" SnapsToDevicePixels="True" >
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
@@ -114,7 +114,7 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <Border Grid.Column="1" Margin="20,0,7,6" Background="White">
+                <Border Grid.Column="1" Margin="20,0,7,6" Background="#F8FAFC">
                     <ContentControl x:Name="MainContent" Margin="10"/>
                 </Border>
             </Grid>

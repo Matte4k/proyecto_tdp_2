@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using proyecto_tdp_2.Helpers;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace proyecto_tdp_2.MVVM.View
@@ -14,10 +15,8 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            DetalleReclamo detalle = new DetalleReclamo();
-            detalle.Show();
+            Navigator.NavigateTo(new DetalleReclamo());
         }
-
 
     }
 }

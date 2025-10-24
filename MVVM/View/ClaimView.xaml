@@ -33,20 +33,39 @@
                             <TextBlock Text="Crear Nuevo Reclamo" FontWeight="Bold" FontSize="18" Margin="0,0,0,20" />
                             <TextBlock Text="Tipo de Servicio:" />
                             <ComboBox x:Name="TypeCombo"
-                                      Width="350"
-                                      Height="30"
-                                      HorizontalAlignment="Left"
-                                      VerticalContentAlignment="Center"
-                                      DisplayMemberPath="nombre"
-                                      SelectedValuePath="id_tipo"
-                                      SelectionChanged="TypeCombo_SelectionChanged"/>
+                                      Margin="0,5,0,10"
+                                      Height="35"
+                                      MinWidth="120"
+                                      VerticalContentAlignment="Center"/>
+                            
                             <TextBlock Text="Subtipo:" />
                             <ComboBox x:Name="cbSubtipo"
-                                      Margin="0,5,0,20"
+                                      Margin="0,5,0,10"
                                       Height="35"
                                       MinWidth="120"
                                       VerticalContentAlignment="Center"
                                       />
+                            
+                            <TextBlock Text="Cliente" />
+                            <TextBox x:Name="txtBuscarCliente"
+                                     Margin="0,5,0,10"
+                                     Height="35"
+                                     MinWidth="120"
+                                     VerticalContentAlignment="Center"
+                                     TextChanged="txtBuscarCliente"
+                                     Text="Ingrese DNI o Nombre"
+                                     />
+                            <ListBox x:Name="lstClientes"
+                                     Height="100"
+                                     Margin="0,5,0,0"
+                                     Visibility="Collapsed"
+                                     MouseDoubleClick="lstResultadosClientes_MouseDoubleClick"
+                                     DisplayMemberPath="dni"
+                                     SelectedValue="id_cliente"
+                                     Background="#F8FAFC"
+                                     BorderBrush="Black"
+                                     BorderThickness="1"
+                                     SelectionChanged="lstResultadosClientes"/>
                             <StackPanel >
                                 <TextBlock Text="Ubicación:" />
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
