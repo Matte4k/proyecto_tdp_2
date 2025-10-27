@@ -107,8 +107,8 @@
                                   Margin="0,0,0,10"
                                   VerticalContentAlignment="Center">
                             <ComboBoxItem Content="Operador" IsSelected="True" />
-                            <ComboBoxItem Content="Supervisor" />
-                            <ComboBoxItem Content="SuperAdmin" />
+                            <ComboBoxItem x:Name="Supervisor" Content="Supervisor" Visibility="Collapsed" />
+                            <ComboBoxItem x:Name="SuperAdmin" Content="SuperAdmin" Visibility="Collapsed" />
                         </ComboBox>
                     </StackPanel>
 

@@ -36,7 +36,8 @@
                                       Margin="0,5,0,10"
                                       Height="35"
                                       MinWidth="120"
-                                      VerticalContentAlignment="Center"/>
+                                      VerticalContentAlignment="Center"
+                                      SelectionChanged="TypeCombo_SelectionChanged"/>
                             
                             <TextBlock Text="Subtipo:" />
                             <ComboBox x:Name="cbSubtipo"
@@ -52,7 +53,7 @@
                                      Height="35"
                                      MinWidth="120"
                                      VerticalContentAlignment="Center"
-                                     TextChanged="txtBuscarCliente"
+                                     TextChanged="txtBuscarCliente_TextChanged"
                                      Text="Ingrese DNI o Nombre"
                                      />
                             <ListBox x:Name="lstClientes"
@@ -65,7 +66,7 @@
                                      Background="#F8FAFC"
                                      BorderBrush="Black"
                                      BorderThickness="1"
-                                     SelectionChanged="lstResultadosClientes"/>
+                                     />
                             <StackPanel >
                                 <TextBlock Text="Ubicación:" />
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
@@ -99,7 +100,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <TextBlock Text="Descripción:" />
-                            <TextBox Margin="0,5,0,20" Height="80" MinWidth="120" TextWrapping="Wrap" AcceptsReturn="True" />
+                            <TextBox x:Name="txtDescripcion" Margin="0,5,0,20" Height="80" MinWidth="120" TextWrapping="Wrap" AcceptsReturn="True" />
                             <Button Content="Enviar Reclamo" Background="#0066FF" Foreground="White" BorderThickness="0" HorizontalAlignment="Left" Margin="10" Width="150" MinWidth="120"  Style="{StaticResource RoundedButton}" Click="BtnEnviarReclamo_Click"/>
                         </StackPanel>
                     </Border>

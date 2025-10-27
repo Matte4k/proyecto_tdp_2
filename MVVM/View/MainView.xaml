@@ -80,6 +80,7 @@
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
                             <RadioButton 
+                                x:Name="rbReportes"
                                  Content="Reportes"
                                  Height="40"
                                  FontSize="14"
@@ -87,6 +88,7 @@
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
                             <RadioButton 
+                                 x:Name="rbBackup"
                                  Content="Backup"
                                  Height="40"
                                  FontSize="14"

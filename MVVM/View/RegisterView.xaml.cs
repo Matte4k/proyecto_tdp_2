@@ -21,6 +21,8 @@ namespace proyecto_tdp_2.MVVM.View
             InitializeComponent();
             LoadCompanies();
             CargarProvincias();
+            if(Session.Rol == "SuperAdmin") SuperAdmin.Visibility = Visibility.Visible;
+            if (Session.Rol == "SuperAdmin") Supervisor.Visibility = Visibility.Visible;
         }
 
         private void LoadCompanies()
@@ -132,9 +134,9 @@ namespace proyecto_tdp_2.MVVM.View
                 int idRol = rolTexto switch
                 {
                     "SuperAdmin" => 1,
-                    "Operador" => 2,
-                    "Supervisor" => 3,
-                    _ => 2
+                    "Supervisor" => 2,
+                    "Operador" => 3,
+                    _ => 3
                 };
 
                 if (string.IsNullOrWhiteSpace(nombre))

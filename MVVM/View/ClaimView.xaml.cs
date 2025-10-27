@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static GMap.NET.Entity.OpenStreetMapRouteEntity;
 
 
 namespace proyecto_tdp_2.MVVM.View
@@ -27,9 +28,10 @@ namespace proyecto_tdp_2.MVVM.View
 
         private DataTable _clientesDT = new DataTable();
 
-        private DataRowView? _clienteSeleccionado;
+        private DataRow? _clienteSeleccionado;
 
         private GMapMarker? currentMarker;
+
 
         public ClaimView()
         {
@@ -131,10 +133,11 @@ namespace proyecto_tdp_2.MVVM.View
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "SELECT id_cliente, dni FROM Cliente";
+                    string query = "SELECT id_cliente, dni FROM Clientes";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     _clientesDT.Clear();
                     _clientesDT.Load(cmd.ExecuteReader());
+
                 }
             }
             catch (Exception ex)
@@ -145,22 +148,34 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void txtBuscarCliente_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (lstClientes == null || _clientesDT == null)
+                return;
+
             string filtro = txtBuscarCliente.Text.Trim();
 
             if (string.IsNullOrEmpty(filtro))
             {
                 lstClientes.Visibility = Visibility.Collapsed;
-                return
+                return;
             }
 
+            if (_clientesDT.Rows.Count == 0)
+                return;
+
             var resultados = _clientesDT.AsEnumerable()
-                .Where(row => row["dni"].ToString().StartsWith(filtro))
+                .Where(row =>
+                    row["dni"] != DBNull.Value &&
+                    row["dni"].ToString().StartsWith(filtro, StringComparison.OrdinalIgnoreCase))
                 .Take(10);
 
             if (resultados.Any())
             {
-                lstClientes.ItemsSource = resultados.
-                    .Select(row => new { id_cliente = row["id_cliente"], dni = row["dni"].toString() })
+                lstClientes.ItemsSource = resultados
+                    .Select(row => new
+                    {
+                        id_cliente = row["id_cliente"] != DBNull.Value ? row["id_cliente"].ToString() : "",
+                        dni = row["dni"] != DBNull.Value ? row["dni"].ToString() : ""
+                    })
                     .ToList();
 
                 lstClientes.Visibility = Visibility.Visible;
@@ -170,6 +185,7 @@ namespace proyecto_tdp_2.MVVM.View
                 lstClientes.Visibility = Visibility.Collapsed;
             }
         }
+
 
         private void lstResultadosClientes_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -293,9 +309,87 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void BtnEnviarReclamo_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (_clienteSeleccionado == null)
+                {
+                    MessageBox.Show("Debe seleccionar un cliente.");
+                    return;
+                }
 
+                if (TypeCombo.SelectedValue == null)
+                {
+                    MessageBox.Show("Debe seleccionar un tipo de reclamo.");
+                    return;
+                }
+
+                if (currentMarker == null)
+                {
+                    MessageBox.Show("Debe seleccionar una ubicación en el mapa.");
+                    return;
+                }
+
+                string descripcion = txtDescripcion.Text.Trim(); 
+                string direccion = txtDireccion.Text.Trim();
+
+                int idCliente = Convert.ToInt32(_clienteSeleccionado["id_cliente"]);
+                int idTipo = Convert.ToInt32(TypeCombo.SelectedValue);
+                int? idSubtipo = cbSubtipo.SelectedValue != null ? Convert.ToInt32(cbSubtipo.SelectedValue) : (int?)null;
+
+                double lat = currentMarker.Position.Lat;
+                double lng = currentMarker.Position.Lng;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = @"INSERT INTO Reclamos 
+                             (cliente_reclamo, id_tipo, id_subtipo, descripcion,  fecha_creacion, estado)
+                             VALUES (@id_cliente, @id_tipo, @id_subtipo, @descripcion, GETDATE(), @estado);
+                             SELECT SCOPE_IDENTITY();
+                             INSERT INTO Ubicacion
+                             (direccion, latitud, longitud, id_provincia)
+                             VALUES (@direccion, @latitud, @longitud,@id_usuario)";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id_cliente", idCliente);
+                    cmd.Parameters.AddWithValue("@id_tipo", idTipo);
+                    cmd.Parameters.AddWithValue("@id_subtipo", (object?)idSubtipo ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@descripcion", descripcion);
+                    cmd.Parameters.AddWithValue("@direccion", direccion);
+                    cmd.Parameters.AddWithValue("@latitud", lat);
+                    cmd.Parameters.AddWithValue("@longitud", lng);
+                    cmd.Parameters.AddWithValue("id_usuario", Session.Provincia);
+                    cmd.Parameters.AddWithValue("@estado", "Pendiente");
+
+                    int idReclamo = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    MessageBox.Show($"Reclamo #{idReclamo} creado correctamente.");
+
+                }
+
+                LimpiarFormulario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar reclamo: {ex.Message}");
+            }
         }
 
-        private void
+        private void LimpiarFormulario()
+        {
+            TypeCombo.SelectedIndex = -1;
+            cbSubtipo.ItemsSource = null;
+            txtBuscarCliente.Text = "";
+            _clienteSeleccionado = null;
+            txtDireccion.Text = "";
+            lblCoordenadas.Text = "";
+            currentMarker = null;
+            mapView.Markers.Clear();
+            _imagenes.Clear();
+            txtDescripcion.Clear();
+        }
+
+
     }
 }
