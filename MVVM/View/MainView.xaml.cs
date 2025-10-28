@@ -47,6 +47,13 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
+        private void BtnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            var loginWindow = new LoginView();
+            loginWindow.Show();
+            this.Close();
+        }
+
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (!this.IsLoaded || MainContent == null)

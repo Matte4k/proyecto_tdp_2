@@ -103,16 +103,37 @@
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
                         </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10" VerticalAlignment="Bottom">
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Left">
                             <Ellipse Width="50" Height="50">
                                 <Ellipse.Fill>
                                     <ImageBrush ImageSource="pack://application:,,,/Images/man.png" Stretch="UniformToFill" />
                                 </Ellipse.Fill>
                             </Ellipse>
-                            <StackPanel Margin="10,0,0,0">
+
+                            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
                                 <TextBlock x:Name="txtNombre" FontWeight="Bold" FontSize="14" />
                                 <TextBlock x:Name="txtRol" FontSize="12" Foreground="Gray" />
                             </StackPanel>
+
+                            <Button Width="25" Height="25"
+                                    Margin="10,0,0,0"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Right"
+                                    Background="Transparent"
+                                    ToolTip="Cerrar sesión"
+                                    Click="BtnLogout_Click">
+                                <Button.Resources>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Opacity" Value="0.7"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Opacity" Value="1"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                                <Image Source="pack://application:,,,/Images/logout.png" Stretch="UniformToFill" />
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Border>

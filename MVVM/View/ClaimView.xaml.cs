@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows;
@@ -13,7 +14,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static GMap.NET.Entity.OpenStreetMapRouteEntity;
 
 
 namespace proyecto_tdp_2.MVVM.View
@@ -40,6 +40,7 @@ namespace proyecto_tdp_2.MVVM.View
             PreviewPanel.ItemsSource = _imagenes;
             CargarTiposPadre();
             CargarClientes();
+            CargarPrioridades();
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)
@@ -71,6 +72,21 @@ namespace proyecto_tdp_2.MVVM.View
 
                     _imagenes.Add(img);
                 }
+            }
+        }
+
+        private void CargarPrioridades()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                string query = "SELECT id_prioridad, nombre FROM Prioridades";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                DataTable dt = new DataTable();
+                dt.Load(cmd.ExecuteReader());
+                cbPriority.ItemsSource = dt.DefaultView;
+                cbPriority.DisplayMemberPath = "nombre";
+                cbPriority.SelectedValuePath = "id_prioridad";
             }
         }
 
@@ -329,43 +345,92 @@ namespace proyecto_tdp_2.MVVM.View
                     return;
                 }
 
-                string descripcion = txtDescripcion.Text.Trim(); 
+                string descripcion = txtDescripcion.Text.Trim();
                 string direccion = txtDireccion.Text.Trim();
 
                 int idCliente = Convert.ToInt32(_clienteSeleccionado["id_cliente"]);
                 int idTipo = Convert.ToInt32(TypeCombo.SelectedValue);
-                int? idSubtipo = cbSubtipo.SelectedValue != null ? Convert.ToInt32(cbSubtipo.SelectedValue) : (int?)null;
+                int? idSubtipo = cbSubtipo.SelectedValue != null ? Convert.ToInt32(cbSubtipo.SelectedValue) : null;
+                int idPrioridad = Convert.ToInt32(cbPriority.SelectedValue);
 
                 double lat = currentMarker.Position.Lat;
                 double lng = currentMarker.Position.Lng;
+
+                int idProvincia = Convert.ToInt32(Session.Provincia);
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
-                    string query = @"INSERT INTO Reclamos 
-                             (cliente_reclamo, id_tipo, id_subtipo, descripcion,  fecha_creacion, estado)
-                             VALUES (@id_cliente, @id_tipo, @id_subtipo, @descripcion, GETDATE(), @estado);
-                             SELECT SCOPE_IDENTITY();
-                             INSERT INTO Ubicacion
-                             (direccion, latitud, longitud, id_provincia)
-                             VALUES (@direccion, @latitud, @longitud,@id_usuario)";
+                    string queryBuscar = "SELECT id_zona FROM Ubicacion WHERE direccion = @direccion AND id_provincia = @provincia";
+                    SqlCommand cmdBuscar = new SqlCommand(queryBuscar, conn);
+                    cmdBuscar.Parameters.AddWithValue("@direccion", direccion);
+                    cmdBuscar.Parameters.AddWithValue("@provincia", idProvincia);
 
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@id_cliente", idCliente);
-                    cmd.Parameters.AddWithValue("@id_tipo", idTipo);
-                    cmd.Parameters.AddWithValue("@id_subtipo", (object?)idSubtipo ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@descripcion", descripcion);
-                    cmd.Parameters.AddWithValue("@direccion", direccion);
-                    cmd.Parameters.AddWithValue("@latitud", lat);
-                    cmd.Parameters.AddWithValue("@longitud", lng);
-                    cmd.Parameters.AddWithValue("id_usuario", Session.Provincia);
-                    cmd.Parameters.AddWithValue("@estado", "Pendiente");
+                    object result = cmdBuscar.ExecuteScalar();
+                    int idUbicacion;
 
-                    int idReclamo = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (result != null)
+                    {
+                        idUbicacion = (int)result;
+                    }
+                    else
+                    {
+                        string queryInsertUbicacion = @"
+                                INSERT INTO Ubicacion (latitud, longitud, direccion, id_provincia)
+                                OUTPUT INSERTED.id_zona
+                                VALUES (@lat, @lon, @direccion, @provincia)";
 
-                    MessageBox.Show($"Reclamo #{idReclamo} creado correctamente.");
+                        SqlCommand cmdInsertUbicacion = new SqlCommand(queryInsertUbicacion, conn);
+                        cmdInsertUbicacion.Parameters.AddWithValue("@lat", lat);
+                        cmdInsertUbicacion.Parameters.AddWithValue("@lon", lng);
+                        cmdInsertUbicacion.Parameters.AddWithValue("@direccion", direccion);
+                        cmdInsertUbicacion.Parameters.AddWithValue("@provincia", idProvincia);
 
+                        idUbicacion = (int)cmdInsertUbicacion.ExecuteScalar();
+                    }
+
+                    string queryReclamo = @"INSERT INTO Reclamos (descripcion, fecha_creacion, prioridad, tipo_reclamo, id_zona, cliente_reclamo, id_estado)
+                                    VALUES (@descripcion, GETDATE(), @id_prioridad, @id_tipo, @id_zona, @id_cliente, @id_estado);
+                                    SELECT SCOPE_IDENTITY();";
+                    SqlCommand cmdReclamo = new SqlCommand(queryReclamo, conn);
+                    cmdReclamo.Parameters.AddWithValue("@descripcion", descripcion);
+                    cmdReclamo.Parameters.AddWithValue("@id_tipo", idTipo);
+                    cmdReclamo.Parameters.AddWithValue("@id_zona", idUbicacion);
+                    cmdReclamo.Parameters.AddWithValue("@id_cliente", idCliente);
+                    cmdReclamo.Parameters.AddWithValue("@id_estado", 1);
+                    cmdReclamo.Parameters.AddWithValue("@id_prioridad", idPrioridad);
+
+                    int idReclamo = Convert.ToInt32(cmdReclamo.ExecuteScalar());
+
+                    string folderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "claims");
+
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+
+                    foreach (var img in _imagenes)
+                    {
+                        string fileName = $"reclamo_{idReclamo}_{Guid.NewGuid():N}.jpg";
+                        string filePath = System.IO.Path.Combine(folderPath, fileName);
+
+                        using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                            encoder.Frames.Add(BitmapFrame.Create(img));
+                            encoder.Save(stream);
+                        }
+
+                        string relativePath = $"Images/claims/{fileName}";
+
+                        string queryImagen = @"INSERT INTO Imagenes (ruta_imagen, id_reclamo)
+                                       VALUES (@ruta, @id_reclamo)";
+                        SqlCommand cmdImagen = new SqlCommand(queryImagen, conn);
+                        cmdImagen.Parameters.AddWithValue("@ruta", relativePath);
+                        cmdImagen.Parameters.AddWithValue("@id_reclamo", idReclamo);
+                        cmdImagen.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show($"✅ Reclamo #{idReclamo} creado correctamente.");
                 }
 
                 LimpiarFormulario();
@@ -375,6 +440,7 @@ namespace proyecto_tdp_2.MVVM.View
                 MessageBox.Show($"Error al guardar reclamo: {ex.Message}");
             }
         }
+
 
         private void LimpiarFormulario()
         {
@@ -390,6 +456,10 @@ namespace proyecto_tdp_2.MVVM.View
             txtDescripcion.Clear();
         }
 
-
+        private void BtnCrearNuevoCliente_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterClientView CrearCliente = new RegisterClientView();
+            CrearCliente.Show();
+        }
     }
 }

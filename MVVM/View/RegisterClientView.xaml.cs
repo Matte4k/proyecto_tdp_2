@@ -1,11 +1,10 @@
 ﻿using System.Configuration;
 using System.Data.SqlClient;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace proyecto_tdp_2.MVVM.View
 {
-    public partial class RegisterClientView : UserControl
+    public partial class RegisterClientView : Window
     {
         string connectionString = ConfigurationManager.ConnectionStrings["MiReclamoDB"].ConnectionString;
 
@@ -102,6 +101,24 @@ namespace proyecto_tdp_2.MVVM.View
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void BtnExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e)
+        {
+            ProfileView perfil = new ProfileView();
+            this.Close();
+        }
+
+        private void TopBar_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+                this.DragMove();
+        }
+
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
