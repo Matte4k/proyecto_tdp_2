@@ -86,7 +86,7 @@ namespace proyecto_tdp_2.MVVM.View
                         break;
 
                     case "Clientes":
-                        MainContent.Content = new RegisterClientView();
+                        MainContent.Content = new ClientesView();
                         break;
 
                     case "Cerrar Sesión":

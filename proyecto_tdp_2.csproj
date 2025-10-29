@@ -18,7 +18,11 @@
     <None Remove="Fonts\Inter.ttf" />
     <None Remove="Images\account_circle_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.png" />
     <None Remove="Images\account_circle_31dp_000000_FILL0_wght400_GRAD0_opsz24.png" />
+    <None Remove="Images\edit.png" />
+    <None Remove="Images\employee.png" />
+    <None Remove="Images\logout.png" />
     <None Remove="Images\man.png" />
+    <None Remove="Images\unable.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,7 +61,19 @@
     <Resource Include="Images\account_circle_31dp_000000_FILL0_wght400_GRAD0_opsz24.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\edit.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\employee.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\logout.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\man.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\unable.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
