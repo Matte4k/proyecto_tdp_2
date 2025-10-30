@@ -2,6 +2,7 @@
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
 using Microsoft.Win32;
+using proyecto_tdp_2.Helpers;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
@@ -41,6 +42,7 @@ namespace proyecto_tdp_2.MVVM.View
             CargarTiposPadre();
             CargarClientes();
             CargarPrioridades();
+            CargarReclamosRecientes();
         }
 
         private void BtnCargarFotos_Click(object sender, RoutedEventArgs e)
@@ -231,7 +233,7 @@ namespace proyecto_tdp_2.MVVM.View
             mapView.MinZoom = 2;
             mapView.MaxZoom = 18;
             mapView.Zoom = 5;
-            mapView.Position = new PointLatLng(-34.6037, -58.3816);
+            mapView.Position = new PointLatLng(-27.469192, -58.831186);
 
             mapView.MouseWheelZoomType = MouseWheelZoomType.MousePositionAndCenter;
             mapView.CanDragMap = true;
@@ -357,89 +359,112 @@ namespace proyecto_tdp_2.MVVM.View
                 double lng = currentMarker.Position.Lng;
 
                 int idProvincia = Convert.ToInt32(Session.Provincia);
+                int idUsuarioActual = Convert.ToInt32(Session.UserId);
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
+                    SqlTransaction transaction = conn.BeginTransaction();
 
-                    string queryBuscar = "SELECT id_zona FROM Ubicacion WHERE direccion = @direccion AND id_provincia = @provincia";
-                    SqlCommand cmdBuscar = new SqlCommand(queryBuscar, conn);
-                    cmdBuscar.Parameters.AddWithValue("@direccion", direccion);
-                    cmdBuscar.Parameters.AddWithValue("@provincia", idProvincia);
-
-                    object result = cmdBuscar.ExecuteScalar();
-                    int idUbicacion;
-
-                    if (result != null)
+                    try
                     {
-                        idUbicacion = (int)result;
-                    }
-                    else
-                    {
-                        string queryInsertUbicacion = @"
-                                INSERT INTO Ubicacion (latitud, longitud, direccion, id_provincia)
-                                OUTPUT INSERTED.id_zona
-                                VALUES (@lat, @lon, @direccion, @provincia)";
+                        // 🔹 1. Buscar o crear ubicación
+                        string queryBuscar = "SELECT id_zona FROM Ubicacion WHERE direccion = @direccion AND id_provincia = @provincia";
+                        SqlCommand cmdBuscar = new SqlCommand(queryBuscar, conn, transaction);
+                        cmdBuscar.Parameters.AddWithValue("@direccion", direccion);
+                        cmdBuscar.Parameters.AddWithValue("@provincia", idProvincia);
 
-                        SqlCommand cmdInsertUbicacion = new SqlCommand(queryInsertUbicacion, conn);
-                        cmdInsertUbicacion.Parameters.AddWithValue("@lat", lat);
-                        cmdInsertUbicacion.Parameters.AddWithValue("@lon", lng);
-                        cmdInsertUbicacion.Parameters.AddWithValue("@direccion", direccion);
-                        cmdInsertUbicacion.Parameters.AddWithValue("@provincia", idProvincia);
+                        object result = cmdBuscar.ExecuteScalar();
+                        int idUbicacion;
 
-                        idUbicacion = (int)cmdInsertUbicacion.ExecuteScalar();
-                    }
-
-                    string queryReclamo = @"INSERT INTO Reclamos (descripcion, fecha_creacion, prioridad, tipo_reclamo, id_zona, cliente_reclamo, id_estado)
-                                    VALUES (@descripcion, GETDATE(), @id_prioridad, @id_tipo, @id_zona, @id_cliente, @id_estado);
-                                    SELECT SCOPE_IDENTITY();";
-                    SqlCommand cmdReclamo = new SqlCommand(queryReclamo, conn);
-                    cmdReclamo.Parameters.AddWithValue("@descripcion", descripcion);
-                    cmdReclamo.Parameters.AddWithValue("@id_tipo", idTipo);
-                    cmdReclamo.Parameters.AddWithValue("@id_zona", idUbicacion);
-                    cmdReclamo.Parameters.AddWithValue("@id_cliente", idCliente);
-                    cmdReclamo.Parameters.AddWithValue("@id_estado", 1);
-                    cmdReclamo.Parameters.AddWithValue("@id_prioridad", idPrioridad);
-
-                    int idReclamo = Convert.ToInt32(cmdReclamo.ExecuteScalar());
-
-                    string folderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "claims");
-
-                    if (!Directory.Exists(folderPath))
-                        Directory.CreateDirectory(folderPath);
-
-                    foreach (var img in _imagenes)
-                    {
-                        string fileName = $"reclamo_{idReclamo}_{Guid.NewGuid():N}.jpg";
-                        string filePath = System.IO.Path.Combine(folderPath, fileName);
-
-                        using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                        if (result != null)
                         {
-                            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                            encoder.Frames.Add(BitmapFrame.Create(img));
-                            encoder.Save(stream);
+                            idUbicacion = (int)result;
+                        }
+                        else
+                        {
+                            string queryInsertUbicacion = @"
+                        INSERT INTO Ubicacion (latitud, longitud, direccion, id_provincia)
+                        OUTPUT INSERTED.id_zona
+                        VALUES (@lat, @lon, @direccion, @provincia)";
+                            SqlCommand cmdInsertUbicacion = new SqlCommand(queryInsertUbicacion, conn, transaction);
+                            cmdInsertUbicacion.Parameters.AddWithValue("@lat", lat);
+                            cmdInsertUbicacion.Parameters.AddWithValue("@lon", lng);
+                            cmdInsertUbicacion.Parameters.AddWithValue("@direccion", direccion);
+                            cmdInsertUbicacion.Parameters.AddWithValue("@provincia", idProvincia);
+
+                            idUbicacion = (int)cmdInsertUbicacion.ExecuteScalar();
                         }
 
-                        string relativePath = $"Images/claims/{fileName}";
+                        // 🔹 2. Crear reclamo
+                        string queryReclamo = @"
+                    INSERT INTO Reclamos (descripcion, fecha_creacion, prioridad, tipo_reclamo, id_zona, cliente_reclamo, id_estado)
+                    VALUES (@descripcion, GETDATE(), @id_prioridad, @id_tipo, @id_zona, @id_cliente, @id_estado);
+                    SELECT SCOPE_IDENTITY();";
+                        SqlCommand cmdReclamo = new SqlCommand(queryReclamo, conn, transaction);
+                        cmdReclamo.Parameters.AddWithValue("@descripcion", descripcion);
+                        cmdReclamo.Parameters.AddWithValue("@id_tipo", idTipo);
+                        cmdReclamo.Parameters.AddWithValue("@id_zona", idUbicacion);
+                        cmdReclamo.Parameters.AddWithValue("@id_cliente", idCliente);
+                        cmdReclamo.Parameters.AddWithValue("@id_estado", 1);
+                        cmdReclamo.Parameters.AddWithValue("@id_prioridad", idPrioridad);
 
-                        string queryImagen = @"INSERT INTO Imagenes (ruta_imagen, id_reclamo)
-                                       VALUES (@ruta, @id_reclamo)";
-                        SqlCommand cmdImagen = new SqlCommand(queryImagen, conn);
-                        cmdImagen.Parameters.AddWithValue("@ruta", relativePath);
-                        cmdImagen.Parameters.AddWithValue("@id_reclamo", idReclamo);
-                        cmdImagen.ExecuteNonQuery();
+                        int idReclamo = Convert.ToInt32(cmdReclamo.ExecuteScalar());
+
+                        // 🔹 3. Asignar reclamo al usuario actual
+                        string queryAsignacion = @"
+                    INSERT INTO AsignacionReclamo (reclamo_asignado, usuario_asignado)
+                    VALUES (@idReclamo, @idUsuario)";
+                        SqlCommand cmdAsignacion = new SqlCommand(queryAsignacion, conn, transaction);
+                        cmdAsignacion.Parameters.AddWithValue("@idReclamo", idReclamo);
+                        cmdAsignacion.Parameters.AddWithValue("@idUsuario", idUsuarioActual);
+                        cmdAsignacion.ExecuteNonQuery();
+
+                        // 🔹 4. Guardar imágenes (si hay)
+                        string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "claims");
+                        if (!Directory.Exists(folderPath))
+                            Directory.CreateDirectory(folderPath);
+
+                        foreach (var img in _imagenes)
+                        {
+                            string fileName = $"reclamo_{idReclamo}_{Guid.NewGuid():N}.jpg";
+                            string filePath = Path.Combine(folderPath, fileName);
+
+                            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                                encoder.Frames.Add(BitmapFrame.Create(img));
+                                encoder.Save(stream);
+                            }
+
+                            string relativePath = $"Images/claims/{fileName}";
+
+                            string queryImagen = @"INSERT INTO Imagenes (ruta_imagen, id_reclamo)
+                                           VALUES (@ruta, @id_reclamo)";
+                            SqlCommand cmdImagen = new SqlCommand(queryImagen, conn, transaction);
+                            cmdImagen.Parameters.AddWithValue("@ruta", relativePath);
+                            cmdImagen.Parameters.AddWithValue("@id_reclamo", idReclamo);
+                            cmdImagen.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit(); // 🔹 Confirmar todos los cambios
+                        MessageBox.Show($"✅ Reclamo #{idReclamo} creado y asignado correctamente a {Session.Nombre} {Session.Apellido}.");
                     }
-
-                    MessageBox.Show($"✅ Reclamo #{idReclamo} creado correctamente.");
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        MessageBox.Show($"Error al guardar reclamo: {ex.Message}");
+                    }
                 }
 
                 LimpiarFormulario();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al guardar reclamo: {ex.Message}");
+                MessageBox.Show($"Error general: {ex.Message}");
             }
         }
+
 
 
         private void LimpiarFormulario()
@@ -460,6 +485,98 @@ namespace proyecto_tdp_2.MVVM.View
         {
             RegisterClientView CrearCliente = new RegisterClientView();
             CrearCliente.Show();
+        }
+
+        private void CargarReclamosRecientes()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT TOP 5 
+                    r.id_reclamo,
+                    r.fecha_creacion,
+                    tr.nombre AS tipo,
+                    u.direccion,
+                    e.nombre AS estado
+                FROM Reclamos r
+                INNER JOIN TipoReclamo tr ON r.tipo_reclamo = tr.id_tipo
+                INNER JOIN Ubicacion u ON r.id_zona = u.id_zona
+                INNER JOIN Estados e ON r.id_estado = e.id_estado
+                ORDER BY r.fecha_creacion DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    var reclamos = dt.AsEnumerable().Select(row => new
+                    {
+                        IdReclamo = Convert.ToInt32(row["id_reclamo"]),
+                        Numero = $"#{row["id_reclamo"]}",
+                        Tipo = $"Tipo: {row["tipo"]}",
+                        Direccion = $"Ubicación: {row["direccion"]}",
+                        Fecha = Convert.ToDateTime(row["fecha_creacion"]).ToString("dd/MM/yyyy"),
+                        Estado = row["estado"].ToString(),
+                        ColorFondo = ObtenerColorFondo(row["estado"].ToString()),
+                        ColorEstado = ObtenerColorEstado(row["estado"].ToString())
+                    }).ToList();
+
+                    RecentClaimsPanel.ItemsSource = reclamos;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar reclamos recientes: {ex.Message}");
+            }
+        }
+
+        private Brush ObtenerColorFondo(string estado)
+        {
+            return estado.ToLower() switch
+            {
+                "pendiente" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF5E5")),
+                "en curso" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E6F0FF")),
+                "resuelto" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5F9E7")),
+                _ => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F8F8F8"))
+            };
+        }
+
+        private void RecentClaim_Click(object sender, MouseButtonEventArgs e)
+        {
+            var clickedElement = e.OriginalSource as FrameworkElement;
+            if (clickedElement == null) return;
+
+            var reclamo = clickedElement.DataContext;
+            if (reclamo == null) return;
+
+            int idReclamo = 0;
+            var prop = reclamo.GetType().GetProperty("IdReclamo");
+            if (prop != null)
+                idReclamo = (int)prop.GetValue(reclamo);
+
+            MostrarDetalleReclamo(idReclamo);
+        }
+
+        private void MostrarDetalleReclamo(int idReclamo)
+        {
+            var detalleView = new DetalleReclamo();
+            detalleView.Tag = idReclamo;
+            Navigator.NavigateTo(detalleView);
+        }
+
+
+        private Brush ObtenerColorEstado(string estado)
+        {
+            return estado.ToLower() switch
+            {
+                "pendiente" => Brushes.Orange,
+                "en curso" => Brushes.Blue,
+                "resuelto" => Brushes.Green,
+                _ => Brushes.Black
+            };
         }
     }
 }

@@ -171,8 +171,6 @@ namespace proyecto_tdp_2.MVVM.View
 
                 editWindow.Title = "Editar Cliente";
                 editWindow.ShowDialog();
-
-                // si la ventana se cerró con cambios, recargamos la lista
                 if (editWindow.DialogResult == true)
                 {
                     CargarClientes();

@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="proyecto_tdp_2.MVVM.View.DetalleReclamo"
-         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-         xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation">
 
     <UserControl.Resources>
         <Style x:Key="RoundedButtonStyle"
@@ -19,32 +19,27 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Padding"
-                    Value="10,0" />
-            <Setter Property="FontWeight"
-                    Value="Bold" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="FontWeight" Value="Bold" />
         </Style>
     </UserControl.Resources>
 
+    <ScrollViewer Margin="30" VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1.5*" />
+            </Grid.ColumnDefinitions>
 
-                <ScrollViewer Grid.Column="1"
-                              Margin="30"
-                              VerticalScrollBarVisibility="Auto">
+            <!-- COLUMNA IZQUIERDA -->
+            <StackPanel Grid.Column="0" Margin="0,0,20,0">
 
-                    <Grid Grid.Row="1"
-                          Margin="20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="1.5*" />
-                        </Grid.ColumnDefinitions>
+                <TextBlock x:Name="txtTitulo" 
+                           Text="Detalles del Reclamo"
+                           FontWeight="Bold"
+                           FontSize="24"
+                           Margin="0,0,0,20" />
 
-                        <StackPanel Grid.Column="0"
-                                    Margin="0,0,20,0">
-                
-                <TextBlock Text="Detalles del Reclamo #001"
-                                       FontWeight="Bold"
-                                       FontSize="24"
-                                       Margin="0,0,0,20" />
                 <Button Content="← Volver a Mis Reclamos"
                         Background="Transparent"
                         Foreground="#0066FF"
@@ -52,207 +47,126 @@
                         FontSize="14"
                         HorizontalAlignment="Left"
                         Margin="0,0,0,10"
-                        Click="Button_Click"
-                        Style="{StaticResource RoundedButtonStyle}"
-                        />
+                        Click="BtnVolver_Click"
+                        Style="{StaticResource RoundedButtonStyle}" />
+
+                <!-- INFORMACIÓN DEL RECLAMO -->
+                <Border Background="#F9F9F9"
+                        CornerRadius="10"
+                        Padding="20"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Información del Reclamo"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Margin="0,0,0,10" />
+
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="ID del Reclamo:" Grid.Column="0" FontWeight="Bold" />
+                            <TextBlock x:Name="txtIdReclamo" Grid.Column="1" />
+
+                            <TextBlock Text="Descripción:" Grid.Column="0" FontWeight="Bold" Margin="0,30,0,0" />
+                            <TextBlock x:Name="txtDescripcion" Grid.Column="1" Margin="0,30,0,0" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Tipo de Servicio:" Grid.Column="0" FontWeight="Bold" Margin="0,60,0,0" />
+                            <TextBlock x:Name="txtTipo" Grid.Column="1" Margin="0,60,0,0" />
+
+                            <TextBlock Text="Zona:" Grid.Column="0" FontWeight="Bold" Margin="0,90,0,0" />
+                            <TextBlock x:Name="txtZona" Grid.Column="1" Margin="0,90,0,0" />
+
+                            <TextBlock Text="Prioridad:" Grid.Column="0" FontWeight="Bold" Margin="0,120,0,0" />
+                            <TextBlock x:Name="txtPrioridad" Grid.Column="1" Margin="0,120,0,0" />
+
+                            <TextBlock Text="Estado:" Grid.Column="0" FontWeight="Bold" Margin="0,150,0,0" />
+                            <TextBlock x:Name="txtEstado" Grid.Column="1" Margin="0,150,0,0" />
+
+                            <TextBlock Text="Fecha de Creación:" Grid.Column="0" FontWeight="Bold" Margin="0,180,0,0" />
+                            <TextBlock x:Name="txtFechaCreacion" Grid.Column="1" Margin="0,180,0,0" />
+                            <TextBlock Text="Última actualización:" FontWeight="Bold"  Margin="0,210,0,0"/>
+                            <TextBlock x:Name="txtUltimaActualizacion"  Margin="0,210,0,0"/>
+
+
+                        </Grid>
+                        
+                    </StackPanel>
+                </Border>
 
                 <Border Background="#F9F9F9"
-                                    CornerRadius="10"
-                                    Padding="20"
-                                    BorderBrush="#E0E0E0"
-                                    BorderThickness="1"
-                                    Margin="0,0,0,20">
-                                <StackPanel>
-                                    <TextBlock Text="Información del Reclamo"
-                                               FontWeight="Bold"
-                                               FontSize="18"
-                                               Margin="0,0,0,10" />
+                        CornerRadius="10"
+                        Padding="20"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Información del Ciudadano"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Margin="0,0,0,10" />
 
-                                    <Grid Margin="0,10,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                                        <TextBlock Text="ID del Reclamo:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold" />
-                                        <TextBlock Text="#001"
-                                                   Grid.Column="1" />
+                            <TextBlock Text="Nombre:" Grid.Column="0" FontWeight="Bold" />
+                            <TextBlock x:Name="txtCliente" Grid.Column="1" />
 
-                                        <TextBlock Text="Descripción:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,30,0,0" />
-                                        <TextBlock Text="Fuga de agua en calle principal"
-                                                   Grid.Column="1"
-                                                   Margin="0,30,0,0" />
+                            <TextBlock Text="Email:" Grid.Column="0" FontWeight="Bold" Margin="0,30,0,0" />
+                            <TextBlock x:Name="txtEmail" Grid.Column="1" Margin="0,30,0,0" />
 
-                                        <TextBlock Text="Tipo de Servicio:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,60,0,0" />
-                                        <TextBlock Text="Agua Potable"
-                                                   Grid.Column="1"
-                                                   Margin="0,60,0,0" />
+                            <TextBlock Text="Teléfono:" Grid.Column="0" FontWeight="Bold" Margin="0,60,0,0" />
+                            <TextBlock x:Name="txtTelefono" Grid.Column="1" Margin="0,60,0,0" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
 
-                                        <TextBlock Text="Zona:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,90,0,0" />
-                                        <TextBlock Text="Centro"
-                                                   Grid.Column="1"
-                                                   Margin="0,90,0,0" />
-
-                                        <TextBlock Text="Prioridad:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,120,0,0" />
-                                        <TextBlock Text="Alta"
-                                                   Grid.Column="1"
-                                                   Margin="0,120,0,0"
-                                                   Foreground="Red" />
-
-                                        <TextBlock Text="Estado:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,150,0,0" />
-                                        <TextBlock Text="Abierto"
-                                                   Grid.Column="1"
-                                                   Margin="0,150,0,0"
-                                                   Foreground="Blue" />
-
-                                        <TextBlock Text="Fecha de Creación:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,180,0,0" />
-                                        <TextBlock Text="2023-10-26 10:30 AM"
-                                                   Grid.Column="1"
-                                                   Margin="0,180,0,0" />
-
-                                        <TextBlock Text="Última Actualización:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,210,0,0" />
-                                        <TextBlock Text="2023-10-26 11:45 AM"
-                                                   Grid.Column="1"
-                                                   Margin="0,210,0,0" />
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Background="#F9F9F9"
-                                    CornerRadius="10"
-                                    Padding="20"
-                                    BorderBrush="#E0E0E0"
-                                    BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="Información del Ciudadano"
-                                               FontWeight="Bold"
-                                               FontSize="18"
-                                               Margin="0,0,0,10" />
-
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Text="Nombre:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold" />
-                                        <TextBlock Text="Juan Pérez"
-                                                   Grid.Column="1" />
-
-                                        <TextBlock Text="Email:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,30,0,0" />
-                                        <TextBlock Text="juan.perez@example.com"
-                                                   Grid.Column="1"
-                                                   Margin="0,30,0,0" />
-
-                                        <TextBlock Text="Teléfono:"
-                                                   Grid.Column="0"
-                                                   FontWeight="Bold"
-                                                   Margin="0,60,0,0" />
-                                        <TextBlock Text="+54 9 11 1234-5678"
-                                                   Grid.Column="1"
-                                                   Margin="0,60,0,0" />
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="1">
-                            <Border Background="#F9F9F9"
-                                    CornerRadius="10"
-                                    Padding="20"
-                                    BorderBrush="#E0E0E0"
-                                    BorderThickness="1"
-                                    Margin="20">
-                                <StackPanel>
-                                    <TextBlock Text="Acciones"
-                                               FontWeight="Bold"
-                                               FontSize="18"
-                                               Margin="0,0,0,10" />
-                                    <Button Content="Cambiar Estado"
-                                            Background="#0066FF"
-                                            Foreground="White"
-                                            Height="40"
-                                            Margin="0,0,0,10"
-                                            BorderThickness="0"
-                                            Style="{StaticResource RoundedButtonStyle}" />
-                                    <Button Content="Asignar Operador"
-                                            Background="#E0E0E0"
-                                            Foreground="Gray"
-                                            Height="40"
-                                            BorderThickness="0"
-                                            Margin="0,0,0,10"
-                                            Style="{StaticResource RoundedButtonStyle}" />
-                                    <Button Content="Añadir Nota"
-                                            Background="#E0E0E0"
-                                            Foreground="Gray"
-                                            Height="40"
-                                            BorderThickness="0"
-                                            Style="{StaticResource RoundedButtonStyle}" />
-                                </StackPanel>
-                            </Border>
-
-                            <Border Background="#F9F9F9"
-                                    CornerRadius="10"
-                                    Padding="20"
-                                    BorderBrush="#E0E0E0"
-                                    BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="Historial y Notas"
-                                               FontWeight="Bold"
-                                               FontSize="18"
-                                               Margin="0,0,0,10" />
-
-                                    <TextBlock Text="Operador (2023-10-26 11:00 AM): Reclamo recibido y asignado a equipo de campo."
-                                               TextWrapping="Wrap"
-                                               Margin="0,0,0,10" />
-
-                                    <TextBlock Text="Sistema (2023-10-26 10:30 AM): Reclamo creado por Juan Pérez."
-                                               TextWrapping="Wrap"
-                                               Margin="0,0,0,10" />
-
-                                    <TextBox Height="80"
-                                             Margin="0,10,0,10"
-                                             TextWrapping="Wrap" />
-
-                                    <Button Content="Guardar Nota"
-                                            Background="#0066FF"
-                                            Foreground="White"
-                                            Height="40"
-                                            Width="120"
-                                            BorderThickness="0"
-                                            HorizontalAlignment="Right"
-                                            Style="{StaticResource RoundedButtonStyle}" />
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </Grid>
-                </ScrollViewer>
+            <StackPanel Grid.Column="1">
+                <Border Background="#F9F9F9"
+                        CornerRadius="10"
+                        Padding="20"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        Margin="20">
+                    <StackPanel>
+                        <TextBlock Text="Acciones"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Margin="0,0,0,10" />
+                        <Button Content="Cambiar Estado"
+                                Background="#0066FF"
+                                Foreground="White"
+                                Height="40"
+                                Margin="0,0,0,10"
+                                BorderThickness="0"
+                                Style="{StaticResource RoundedButtonStyle}" />
+                        <Button Content="Asignar Operador"
+                                Background="#E0E0E0"
+                                Foreground="Gray"
+                                Height="40"
+                                BorderThickness="0"
+                                Margin="0,0,0,10"
+                                Style="{StaticResource RoundedButtonStyle}" />
+                        <Button Content="Añadir Nota"
+                                Background="#E0E0E0"
+                                Foreground="Gray"
+                                Height="40"
+                                BorderThickness="0"
+                                Style="{StaticResource RoundedButtonStyle}" />
+                        <TextBlock Text="Comentario del cambio:" FontWeight="Bold" />
+                        <TextBlock x:Name="txtComentarioHistorial" TextWrapping="Wrap" />
+                        <TextBlock Text="Operador responsable:" FontWeight="Bold" />
+                        <TextBlock x:Name="txtOperador" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </UserControl>
