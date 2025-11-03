@@ -126,5 +126,19 @@ namespace proyecto_tdp_2.MVVM.View
         {
             Navigator.NavigateTo(new MisReclamosView());
         }
+
+        private void CambiarEstado_Click(object sender, RoutedEventArgs e)
+        {
+            var cambiarEstadoView = new CambiarEstadoReclamoView();
+            bool? resultado = cambiarEstadoView.ShowDialog();
+
+            if (resultado == true)
+            {
+                string nuevoEstado = cambiarEstadoView.NuevoEstado;
+                string comentario = cambiarEstadoView.Comentario;
+
+                MessageBox.Show($"Estado cambiado a: {nuevoEstado}\nComentario: {comentario}");
+            }
+        }
     }
 }

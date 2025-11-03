@@ -31,7 +31,6 @@
                 <ColumnDefinition Width="1.5*" />
             </Grid.ColumnDefinitions>
 
-            <!-- COLUMNA IZQUIERDA -->
             <StackPanel Grid.Column="0" Margin="0,0,20,0">
 
                 <TextBlock x:Name="txtTitulo" 
@@ -43,6 +42,7 @@
                 <Button Content="← Volver a Mis Reclamos"
                         Background="Transparent"
                         Foreground="#0066FF"
+                        
                         BorderThickness="0"
                         FontSize="14"
                         HorizontalAlignment="Left"
@@ -50,7 +50,6 @@
                         Click="BtnVolver_Click"
                         Style="{StaticResource RoundedButtonStyle}" />
 
-                <!-- INFORMACIÓN DEL RECLAMO -->
                 <Border Background="#F9F9F9"
                         CornerRadius="10"
                         Padding="20"
@@ -89,8 +88,8 @@
 
                             <TextBlock Text="Fecha de Creación:" Grid.Column="0" FontWeight="Bold" Margin="0,180,0,0" />
                             <TextBlock x:Name="txtFechaCreacion" Grid.Column="1" Margin="0,180,0,0" />
-                            <TextBlock Text="Última actualización:" FontWeight="Bold"  Margin="0,210,0,0"/>
-                            <TextBlock x:Name="txtUltimaActualizacion"  Margin="0,210,0,0"/>
+                            <TextBlock Text="Última actualización:" Grid.Column="0" FontWeight="Bold"  Margin="0,210,0,0"/>
+                            <TextBlock x:Name="txtUltimaActualizacion"  Grid.Column="1" Margin="0,210,0,0"/>
 
 
                         </Grid>
@@ -146,7 +145,7 @@
                                 Height="40"
                                 Margin="0,0,0,10"
                                 BorderThickness="0"
-                                Style="{StaticResource RoundedButtonStyle}" />
+                                Style="{StaticResource RoundedButtonStyle}" Click="CambiarEstado_Click" />
                         <Button Content="Asignar Operador"
                                 Background="#E0E0E0"
                                 Foreground="Gray"
