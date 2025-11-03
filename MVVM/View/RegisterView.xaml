@@ -180,7 +180,7 @@
                                     Foreground="White"
                                     FontSize="14"
                                     Click="BtnSave_Click"
-                                    Style="{StaticResource RoundedButton}" />
+                                    Style="{StaticResource RoundedButton}" IsDefault="True" />
                             <Button Content="Borrar todo"
                                     Width="120"
                                     Height="40"

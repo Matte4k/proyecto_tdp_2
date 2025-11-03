@@ -128,7 +128,7 @@
                             Margin="0,0,20,0"
                             Padding="0"
                             FontWeight="Bold"
-                            Click="BtnSave_Click">
+                            Click="BtnSave_Click" IsDefault="True">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">

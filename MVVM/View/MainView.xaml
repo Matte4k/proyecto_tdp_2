@@ -39,14 +39,16 @@
                         </Grid.RowDefinitions>
                         <TextBlock Text="MiReclamo" FontWeight="Bold" FontSize="20" VerticalAlignment="Center" Margin="20,0,0,0" />
                         <StackPanel Grid.Row="1" Margin="0,20,0,0">
-                            <RadioButton Content="Crear Reclamo"
+                            <RadioButton x:Name="rbAgregarReclamo"
+                                Content="Crear Reclamo"
                                  Height="40"
                                  FontSize="14"
                                  Margin="10,5"
                                  Style="{StaticResource MenuButtonTheme}"
                                  IsChecked="True"
                                  Checked="RadioButton_Checked" />
-                            <RadioButton Content="Mis Reclamos"
+                            <RadioButton 
+                                Content="Mis Reclamos"
                                  Height="40"
                                  FontSize="14"
                                  Margin="10,5"

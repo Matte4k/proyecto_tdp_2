@@ -90,7 +90,7 @@ d:DesignWidth="1250">
                                 Foreground="White"
                                 FontSize="14"
                                 Click="BtnCrear_Click"
-                                Style="{StaticResource RoundedButton}" />
+                                Style="{StaticResource RoundedButton}" IsDefault="True" />
                             <Button Content="Borrar todo"
                                 Width="120"
                                 Height="40"

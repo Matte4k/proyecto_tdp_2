@@ -22,10 +22,11 @@ namespace proyecto_tdp_2.MVVM.View
 
             txtNombre.Text = Session.Nombre;
             txtRol.Text = Session.Rol;
-            if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbAgregarOperador.Visibility = Visibility.Collapsed;
+            if (Session.Rol != "SuperAdmin") rbAgregarOperador.Visibility = Visibility.Collapsed;
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbAgregarTipoReclamo.Visibility = Visibility.Collapsed;
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbBackup.Visibility = Visibility.Collapsed;
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbReportes.Visibility = Visibility.Collapsed;
+            if (Session.Rol != "Operador") rbAgregarReclamo.Visibility = Visibility.Collapsed;
 
         }
         private void Nav_CrearReclamo(object sender, RoutedEventArgs e) { MainContent.Content = new ClaimView(); }

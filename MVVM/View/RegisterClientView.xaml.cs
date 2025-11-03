@@ -25,12 +25,45 @@ namespace proyecto_tdp_2.MVVM.View
             tbCUIT.Text = cuit;
             tbDNI.Text = dni;
             tbEmail.Text = email;
+
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
+            if (tbEmail.Text == "")
+            {
+                MessageBox.Show("Debe escribir un correo electronico.");
+                return;
+            }
+
+            if (tbFullName.Text == "")
+            {
+                MessageBox.Show("Debe escribir un nombre.");
+                return;
+            }
+            if (tbDNI.Text == "")
+            {
+                MessageBox.Show("Debe escribir un numero de documento.");
+                return;
+            }
+            if (tbSurName.Text == "")
+            {
+                MessageBox.Show("Debe escribir un apellido.");
+                return;
+            }
+            if (tbPhone.Text == "")
+            {
+                MessageBox.Show("Debe escribir un numero de telefono.");
+                return;
+            }
+            if (tbCUIT.Text == "")
+            {
+                MessageBox.Show("Debe escribir un numero de telefono.");
+                return;
+            }
             try
             {
+                
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();

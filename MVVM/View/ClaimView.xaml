@@ -130,7 +130,7 @@
                             </ItemsControl>
                             <TextBlock Text="Descripción:" />
                             <TextBox x:Name="txtDescripcion" Margin="0,5,0,20" Height="80" MinWidth="120" TextWrapping="Wrap" AcceptsReturn="True" />
-                            <Button Content="Enviar Reclamo" Background="#0066FF" Foreground="White" BorderThickness="0" HorizontalAlignment="Left" Margin="10" Width="150" MinWidth="120"  Style="{StaticResource RoundedButton}" Click="BtnEnviarReclamo_Click"/>
+                            <Button Content="Enviar Reclamo" Background="#0066FF" Foreground="White" BorderThickness="0" HorizontalAlignment="Left" Margin="10" Width="150" MinWidth="120"  Style="{StaticResource RoundedButton}" Click="BtnEnviarReclamo_Click" IsDefault="True"/>
                         </StackPanel>
                     </Border>
                     <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="20" BorderBrush="#fbfaf9" BorderThickness="1">

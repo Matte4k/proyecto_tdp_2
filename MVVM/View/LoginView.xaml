@@ -91,7 +91,7 @@
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="20"
-                            >
+                            Visibility="Collapsed">
                     <CheckBox x:Name="cbRemember"
                               Content="Recordarme"
                               FontSize="14" />
@@ -113,7 +113,7 @@
                         FontWeight="Bold"
                         BorderThickness="0"
                         Click="btnLogin_Click"
-                        IsDefault="True" />
+                        IsDefault="True" Margin="0,15,0,0" />
             </StackPanel>
         </Grid>
     </Border>
