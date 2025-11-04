@@ -90,6 +90,14 @@ namespace proyecto_tdp_2.MVVM.View
                         MainContent.Content = new ClientesView();
                         break;
 
+                    case "Dashboard":
+                        MainContent.Content = new DashboardView();
+                        break;
+
+                    case "Reportes":
+                        MainContent.Content = new ReportesView();
+                        break;
+
                     case "Cerrar Sesión":
                         MainContent.Content = null;
                         LoginView loginView = new LoginView();

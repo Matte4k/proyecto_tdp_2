@@ -32,8 +32,9 @@ namespace proyecto_tdp_2.MVVM.ViewModel
 
         public MainViewModel()
         {
-            CurrentView = new ClaimView();
-
+            ShowDashboardCommand = new RelayCommand(o => CurrentView = new DashboardView());
+            ShowReclamosCommand = new RelayCommand(o => CurrentView = new MisReclamosView());
+            CurrentView = new DashboardView();
         }
 
         protected void OnPropertyChanged(string propertyName)

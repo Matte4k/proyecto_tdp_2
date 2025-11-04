@@ -12,14 +12,6 @@ namespace proyecto_tdp_2.MVVM.View
         public NewType()
         {
             InitializeComponent();
-            if (Session.Rol != "SuperAdmin")
-            {
-                MessageBox.Show("No tiene permisos para crear tipos de reclamos.", "Acceso denegado",
-                                MessageBoxButton.OK, MessageBoxImage.Warning);
-                this.IsEnabled = false;
-                return;
-            }
-
             CargarTiposPadre();
         }
 

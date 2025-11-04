@@ -368,7 +368,6 @@ namespace proyecto_tdp_2.MVVM.View
 
                     try
                     {
-                        // 🔹 1. Buscar o crear ubicación
                         string queryBuscar = "SELECT id_zona FROM Ubicacion WHERE direccion = @direccion AND id_provincia = @provincia";
                         SqlCommand cmdBuscar = new SqlCommand(queryBuscar, conn, transaction);
                         cmdBuscar.Parameters.AddWithValue("@direccion", direccion);
@@ -396,7 +395,6 @@ namespace proyecto_tdp_2.MVVM.View
                             idUbicacion = (int)cmdInsertUbicacion.ExecuteScalar();
                         }
 
-                        // 🔹 2. Crear reclamo
                         string queryReclamo = @"
                     INSERT INTO Reclamos (descripcion, fecha_creacion, prioridad, tipo_reclamo, id_zona, cliente_reclamo, id_estado)
                     VALUES (@descripcion, GETDATE(), @id_prioridad, @id_tipo, @id_zona, @id_cliente, @id_estado);
@@ -411,7 +409,6 @@ namespace proyecto_tdp_2.MVVM.View
 
                         int idReclamo = Convert.ToInt32(cmdReclamo.ExecuteScalar());
 
-                        // 🔹 3. Asignar reclamo al usuario actual
                         string queryAsignacion = @"
                     INSERT INTO AsignacionReclamo (reclamo_asignado, usuario_asignado)
                     VALUES (@idReclamo, @idUsuario)";
@@ -420,7 +417,6 @@ namespace proyecto_tdp_2.MVVM.View
                         cmdAsignacion.Parameters.AddWithValue("@idUsuario", idUsuarioActual);
                         cmdAsignacion.ExecuteNonQuery();
 
-                        // 🔹 4. Guardar imágenes (si hay)
                         string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "claims");
                         if (!Directory.Exists(folderPath))
                             Directory.CreateDirectory(folderPath);
@@ -447,7 +443,7 @@ namespace proyecto_tdp_2.MVVM.View
                             cmdImagen.ExecuteNonQuery();
                         }
 
-                        transaction.Commit(); // 🔹 Confirmar todos los cambios
+                        transaction.Commit();
                         MessageBox.Show($"✅ Reclamo #{idReclamo} creado y asignado correctamente a {Session.Nombre} {Session.Apellido}.");
                     }
                     catch (Exception ex)

@@ -53,7 +53,7 @@ namespace proyecto_tdp_2.MVVM.View
                                u.email, 
                                u.telefono, 
                                s.nombre AS servicio,
-                               p.nombre AS provincia, 
+                               p.id_provincia AS provincia, 
                                u.dni,
                                u.cuit
                         FROM Usuario u
