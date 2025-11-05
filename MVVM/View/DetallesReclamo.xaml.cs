@@ -129,15 +129,21 @@ namespace proyecto_tdp_2.MVVM.View
 
         private void CambiarEstado_Click(object sender, RoutedEventArgs e)
         {
-            var cambiarEstadoView = new CambiarEstadoReclamoView();
+            if (Tag is not int idReclamo)
+            {
+                MessageBox.Show("ID de reclamo no válido.");
+                return;
+            }
+
+            int idOperador = Session.UserId;
+
+            var cambiarEstadoView = new CambiarEstadoReclamoView(idReclamo, idOperador);
             bool? resultado = cambiarEstadoView.ShowDialog();
 
             if (resultado == true)
             {
-                string nuevoEstado = cambiarEstadoView.NuevoEstado;
-                string comentario = cambiarEstadoView.Comentario;
-
-                MessageBox.Show($"Estado cambiado a: {nuevoEstado}\nComentario: {comentario}");
+                CargarReclamo(idReclamo);
+                MessageBox.Show("El estado se cambió correctamente.");
             }
         }
     }

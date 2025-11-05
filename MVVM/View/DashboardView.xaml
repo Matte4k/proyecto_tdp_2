@@ -30,7 +30,7 @@
 
                 <Border Background="White" CornerRadius="10" BorderBrush="#E0E0E0" BorderThickness="1" Padding="20" Margin="5">
                     <StackPanel>
-                        <TextBlock Text="Reclamos Abiertos" FontWeight="Bold" />
+                        <TextBlock Text="Reclamos En Curso" FontWeight="Bold" />
                         <TextBlock Text="{Binding ReclamosAbiertos}" FontSize="24" FontWeight="Bold" Foreground="#0066FF" />
                     </StackPanel>
                 </Border>

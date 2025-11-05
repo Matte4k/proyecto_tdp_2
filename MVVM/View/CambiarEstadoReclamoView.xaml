@@ -59,7 +59,7 @@
                               VerticalContentAlignment="Center"
                               SelectedIndex="0">
                         <ComboBoxItem Content="Pendiente" />
-                        <ComboBoxItem Content="En Curso" />
+                        <ComboBoxItem Content="En Proceso" />
                         <ComboBoxItem Content="Resuelto" />
                         <ComboBoxItem Content="Cancelado" />
                     </ComboBox>

@@ -91,7 +91,7 @@ namespace proyecto_tdp_2.MVVM.View
                         break;
 
                     case "Dashboard":
-                        MainContent.Content = new DashboardView();
+                        MainContent.Content = new DashboardView(Session.UserId, Session.Rol);
                         break;
 
                     case "Reportes":

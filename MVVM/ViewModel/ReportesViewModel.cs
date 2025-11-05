@@ -122,7 +122,7 @@ namespace proyecto_tdp_2.MVVM.ViewModel
             {
         new ColumnSeries<int>
         {
-            Name = "Estados de Reclamos", // 👈 agregado
+            Name = "Estados de Reclamos",
             Values = values,
             Fill = new SolidColorPaint(SKColors.SteelBlue),
             DataLabelsPaint = new SolidColorPaint(SKColors.Black),
@@ -213,7 +213,7 @@ namespace proyecto_tdp_2.MVVM.ViewModel
                             Nombre = reader.GetString(0),
                             Asignados = reader.GetInt32(1),
                             Resueltos = reader.GetInt32(2),
-                            PromedioDias = reader.IsDBNull(3) ? 0 : reader.GetDouble(3)
+                            PromedioDias = reader.IsDBNull(3) ? 0 : reader.GetInt32(3)
                         });
                     }
                 }

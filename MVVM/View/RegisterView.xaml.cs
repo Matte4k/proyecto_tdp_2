@@ -21,8 +21,12 @@ namespace proyecto_tdp_2.MVVM.View
             InitializeComponent();
             LoadCompanies();
             CargarProvincias();
-            if(Session.Rol == "SuperAdmin") SuperAdmin.Visibility = Visibility.Visible;
-            if (Session.Rol == "SuperAdmin") Supervisor.Visibility = Visibility.Visible;
+
+            if (Session.Rol == "SuperAdmin")
+            {
+                SuperAdmin.Visibility = Visibility.Visible;
+                Supervisor.Visibility = Visibility.Visible;
+            }
         }
 
         private void LoadCompanies()
@@ -195,12 +199,15 @@ namespace proyecto_tdp_2.MVVM.View
                     return;
                 }
 
+                int nuevoIdUsuario = 0;
+
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
                     string query = @"INSERT INTO Usuario 
                                 (nombre, apellido, email, password, telefono, dni, cuit, id_rol, id_servicio, id_provincia)
+                                OUTPUT INSERTED.id_usuario
                                 VALUES 
                                 (@nombre, @apellido, @correo, @pass, @telefono, @dni, @cuit, @rol, @servicio, @provincia)";
 
@@ -217,18 +224,47 @@ namespace proyecto_tdp_2.MVVM.View
                         command.Parameters.AddWithValue("@servicio", idServicio);
                         command.Parameters.AddWithValue("@provincia", idProvincia);
 
-                        int rows = command.ExecuteNonQuery();
+                        nuevoIdUsuario = (int)command.ExecuteScalar();
+                    }
 
-                        if (rows > 0)
+                    if (idRol == 3)
+                    {
+                        string querySupervisor = @"
+                            SELECT TOP 1 id_usuario 
+                            FROM Usuario 
+                            WHERE id_servicio = @servicio AND id_rol = 2";
+
+                        int? idSupervisor = null;
+                        using (SqlCommand cmd = new SqlCommand(querySupervisor, connection))
                         {
-                            MessageBox.Show("Usuario creado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                            cmd.Parameters.AddWithValue("@servicio", idServicio);
+                            object result = cmd.ExecuteScalar();
+                            if (result != null)
+                                idSupervisor = Convert.ToInt32(result);
+                        }
+
+                        if (idSupervisor != null)
+                        {
+                            string queryAsignacion = @"
+                                INSERT INTO SupervisorOperador (id_supervisor, id_operador)
+                                VALUES (@idSupervisor, @idOperador)";
+
+                            using (SqlCommand cmd2 = new SqlCommand(queryAsignacion, connection))
+                            {
+                                cmd2.Parameters.AddWithValue("@idSupervisor", idSupervisor);
+                                cmd2.Parameters.AddWithValue("@idOperador", nuevoIdUsuario);
+                                cmd2.ExecuteNonQuery();
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("No se pudo crear el usuario.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("No se encontró un supervisor disponible para este servicio. El operador fue creado sin asignación.",
+                                "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
                     }
                 }
+
+                MessageBox.Show("Usuario creado correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (SqlException ex)
             {

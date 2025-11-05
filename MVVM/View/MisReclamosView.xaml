@@ -39,128 +39,161 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="30">
-        <StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="30">
+            <StackPanel>
 
-            <TextBlock Text="Mis Reclamos"
-                       FontWeight="Bold"
-                       FontSize="24"
-                       Margin="0,0,0,20" />
+                <TextBlock Text="Mis Reclamos"
+                           FontWeight="Bold"
+                           FontSize="24"
+                           Margin="0,0,0,20" />
 
-            <Border Background="#F8FAFC"
-                    CornerRadius="10"
-                    Padding="15"
-                    Margin="0,0,0,20"
-                    BorderBrush="#E0E0E0"
-                    BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                <Border Background="#F8FAFC"
+                        CornerRadius="10"
+                        Padding="15"
+                        Margin="0,0,0,20"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <TextBox Grid.Column="0"
-                             Margin="5"
-                             Height="35"
-                             Text="{Binding DniBusqueda, UpdateSourceTrigger=PropertyChanged}"
-                             VerticalContentAlignment="Center"
-                             ToolTip="Buscar por DNI"
-                             />
+                        <TextBox Grid.Column="0"
+                                 Margin="5"
+                                 Height="35"
+                                 Text="{Binding DniBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip="Buscar por DNI"/>
 
-                    <ComboBox Grid.Column="1"
-                              Margin="5"
-                              Height="35"
-                              ItemsSource="{Binding EstadosDisponibles}"
-                              SelectedItem="{Binding EstadoSeleccionado, UpdateSourceTrigger=PropertyChanged}"
-                              VerticalContentAlignment="Center"/>
+                        <ComboBox Grid.Column="1"
+                                  Margin="5"
+                                  Height="35"
+                                  ItemsSource="{Binding EstadosDisponibles}"
+                                  SelectedItem="{Binding EstadoSeleccionado, UpdateSourceTrigger=PropertyChanged}"
+                                  VerticalContentAlignment="Center"/>
 
-                    <ComboBox Grid.Column="2"
-                              Margin="5"
-                              Height="35"
-                              SelectedValuePath="Content"
-                              SelectedValue="{Binding TipoSeleccionado, UpdateSourceTrigger=PropertyChanged}"
-                              VerticalContentAlignment="Center">
-                        <ComboBoxItem Content="Todos" IsSelected="True" />
-                        <ComboBoxItem Content="Agua" />
-                        <ComboBoxItem Content="Luz" />
-                        <ComboBoxItem Content="Calles" />
-                    </ComboBox>
+                        <ComboBox Grid.Column="2"
+                                  Margin="5"
+                                  Height="35"
+                                  SelectedValuePath="Content"
+                                  SelectedValue="{Binding TipoSeleccionado, UpdateSourceTrigger=PropertyChanged}"
+                                  VerticalContentAlignment="Center">
+                            <ComboBoxItem Content="Todos" IsSelected="True" />
+                            <ComboBoxItem Content="Agua" />
+                            <ComboBoxItem Content="Luz" />
+                            <ComboBoxItem Content="Calles" />
+                        </ComboBox>
 
-                    <Button Grid.Column="3"
-                            Content="Filtrar"
-                            BorderThickness="0"
-                            Width="100"
-                            Height="35"
-                            Margin="10,0,0,0"
-                           Command="{Binding FiltrarCommand}"
-                            Style="{StaticResource HoverButtonStyle}" IsDefault="True"/>
-                </Grid>
-            </Border>
+                        <Button Grid.Column="3"
+                                Content="Filtrar"
+                                BorderThickness="0"
+                                Width="100"
+                                Height="35"
+                                Margin="10,0,0,0"
+                                Command="{Binding FiltrarCommand}"
+                                Style="{StaticResource HoverButtonStyle}"
+                                IsDefault="True"/>
+                    </Grid>
+                </Border>
 
-            <TextBlock Text="Lista de Reclamos"
-                       FontWeight="Bold"
-                       FontSize="18"
-                       Margin="0,0,0,10" />
+                <TextBlock Text="Lista de Reclamos"
+                           FontWeight="Bold"
+                           FontSize="18"
+                           Margin="0,0,0,10" />
 
-            <ItemsControl ItemsSource="{Binding Reclamos}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="#F8FAFC"
-                                CornerRadius="10"
-                                Padding="15"
-                                Margin="0,0,0,10"
-                                BorderBrush="#E0E0E0"
-                                BorderThickness="1">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                <ItemsControl ItemsSource="{Binding Reclamos}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#F8FAFC"
+                                    CornerRadius="10"
+                                    Padding="15"
+                                    Margin="0,0,0,10"
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                <StackPanel>
-                                    <TextBlock Text="{Binding IdReclamo, StringFormat='Reclamo Nro: {0}'}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding Tipo, StringFormat='Tipo: {0}'}" />
-                                    <TextBlock Text="{Binding Direccion, StringFormat='📍 {0}'}" />
-                                </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding IdReclamo, StringFormat='Reclamo Nro: {0}'}" FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Tipo, StringFormat='Tipo: {0}'}" />
+                                        <TextBlock Text="{Binding Direccion, StringFormat='📍 {0}'}" />
+                                    </StackPanel>
 
-                                <TextBlock Grid.Column="1"
-                                           Text="{Binding Estado}"
-                                           Foreground="Orange"
-                                           FontWeight="Bold"
-                                           VerticalAlignment="Center"
-                                           Margin="20,0" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding Estado}"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Margin="20,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Estado}" Value="Pendiente">
+                                                        <Setter Property="Foreground" Value="Orange"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Estado}" Value="En curso">
+                                                        <Setter Property="Foreground" Value="Gold"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Estado}" Value="Resuelto">
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Estado}" Value="Cancelado">
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
 
-                                <TextBlock Grid.Column="2"
-                                           Text="{Binding FechaCreacion, StringFormat={}{0:dd/MM/yyyy}}"
-                                           VerticalAlignment="Center"
-                                           Margin="20,0" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding FechaCreacion, StringFormat={}{0:dd/MM/yyyy}}"
+                                               VerticalAlignment="Center"
+                                               Margin="20,0" />
 
-                                <Button Grid.Column="3"
-                                        Content="Ver Detalles"
-                                        Width="120"
-                                        Height="30"
-                                        Margin="20,0"
-                                        Style="{StaticResource HoverButtonStyle}"
-                                        Command="{Binding DataContext.VerDetallesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                    <Button Grid.Column="3"
+                                            Content="Ver Detalles"
+                                            Width="120"
+                                            Height="30"
+                                            Margin="20,0"
+                                            Style="{StaticResource HoverButtonStyle}"
+                                            Command="{Binding DataContext.VerDetallesCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0" Height="51" Width="325">
-                <Button Content="Anterior" Command="{Binding AnteriorCommand}" Margin="5" Style="{StaticResource HoverButtonStyle}" Width="68"/>
-                <TextBlock Text="{Binding PaginaActualTexto}" 
-                           VerticalAlignment="Center"
-                           Margin="10,0,0,0"/>
-                <Button Content="Siguiente" Command="{Binding SiguienteCommand}" Margin="5" Style="{StaticResource HoverButtonStyle}" Width="63"/>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,0"
+                            Height="51"
+                            Width="325">
+                    <Button Content="Anterior"
+                            Command="{Binding AnteriorCommand}"
+                            Margin="5"
+                            Style="{StaticResource HoverButtonStyle}"
+                            Width="68"/>
+                    <TextBlock Text="{Binding PaginaActualTexto}" 
+                               VerticalAlignment="Center"
+                               Margin="10,0,0,0"/>
+                    <Button Content="Siguiente"
+                            Command="{Binding SiguienteCommand}"
+                            Margin="5"
+                            Style="{StaticResource HoverButtonStyle}"
+                            Width="63"/>
+                </StackPanel>
+
             </StackPanel>
-
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

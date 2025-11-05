@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF">
 
-    <!-- ScrollViewer para permitir desplazamiento vertical -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="20" Background="#fafafa">
             <Grid.RowDefinitions>
@@ -14,14 +13,12 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Título superior -->
             <TextBlock Text="Reportes de Reclamos" 
                        FontSize="26"
                        FontWeight="Bold"
                        Margin="0,0,0,30"
                        Grid.Row="0" />
 
-            <!-- Filtros -->
             <StackPanel Orientation="Horizontal"
                         Grid.Row="1"
                         Margin="0,0,0,30"
@@ -74,7 +71,6 @@
                 </Button>
             </StackPanel>
 
-            <!-- Resumen superior -->
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -95,12 +91,7 @@
                         <TextBlock Text="{Binding TiempoPromedioResolucion, StringFormat={}{0:N1} días}"
                                    FontSize="24" Foreground="DarkOrange" FontWeight="Bold" />
 
-                        <lvc:CartesianChart
-                            Series="{Binding SeriesEstados}"
-                            XAxes="{Binding XAxisEstados}"
-                            Height="250"
-                            Margin="0,20,0,0"
-                            LegendPosition="Bottom" />
+                        
                     </StackPanel>
                 </Border>
 
@@ -108,11 +99,7 @@
                     <StackPanel>
                         <TextBlock Text="Reclamos Pendientes (Alta Prioridad)" FontWeight="Bold" />
                         <TextBlock Text="{Binding ReclamosAltaPrioridad}" FontSize="24" Foreground="Red" />
-                        <lvc:PieChart
-                            Series="{Binding SeriesServicios}"
-                            Height="250"
-                            Margin="0,20,0,0"
-                            LegendPosition="Bottom" />
+                        
                     </StackPanel>
                 </Border>
             </Grid>
@@ -126,14 +113,23 @@
                 <Border CornerRadius="10" Background="White" Padding="20" Margin="5" BorderBrush="#ddd" BorderThickness="1">
                     <StackPanel>
                         <TextBlock Text="Reclamos por Estado" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <lvc:CartesianChart Series="{Binding SeriesEstados}" XAxes="{Binding XAxisEstados}" />
+                        <lvc:CartesianChart
+                            Series="{Binding SeriesEstados}"
+                            XAxes="{Binding XAxisEstados}"
+                            Height="250"
+                            Margin="0,20,0,0"
+                            LegendPosition="Bottom" />
                     </StackPanel>
                 </Border>
 
                 <Border Grid.Column="1" CornerRadius="10" Background="White" Padding="20" Margin="5" BorderBrush="#ddd" BorderThickness="1">
                     <StackPanel>
                         <TextBlock Text="Reclamos por Tipo de Servicio" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <lvc:PieChart Series="{Binding SeriesServicios}" />
+                        <lvc:PieChart
+    Series="{Binding SeriesServicios}"
+    Height="250"
+    Margin="0,20,0,0"
+    LegendPosition="Bottom" />
                     </StackPanel>
                 </Border>
             </Grid>
