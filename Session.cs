@@ -12,5 +12,6 @@
         public static string Servicio { get; set; } = string.Empty;
         public static string Dni { get; set; } = string.Empty;
         public static string Cuit { get; set; } = string.Empty;
+        public static string ImagenRuta { get; set; } = string.Empty;
     }
 }

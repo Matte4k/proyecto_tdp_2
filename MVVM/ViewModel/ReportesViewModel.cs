@@ -193,16 +193,16 @@ namespace proyecto_tdp_2.MVVM.ViewModel
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(@"
-                        SELECT 
-                            CONCAT(U.nombre, ' ', U.apellido) AS operador,
-                            COUNT(A.reclamo_asignado) AS asignados,
-                            SUM(CASE WHEN E.nombre = 'Resuelto' THEN 1 ELSE 0 END) AS resueltos,
-                            AVG(CASE WHEN R.fecha_cierre IS NOT NULL THEN DATEDIFF(DAY, R.fecha_creacion, R.fecha_cierre) END) AS promedio
-                        FROM Usuario U
-                        INNER JOIN AsignacionReclamo A ON U.id_usuario = A.usuario_asignado
-                        INNER JOIN Reclamos R ON R.id_reclamo = A.reclamo_asignado
-                        INNER JOIN Estados E ON R.id_estado = E.id_estado
-                        GROUP BY U.nombre, U.apellido;", conn))
+                    SELECT 
+                        CONCAT(U.nombre, ' ', U.apellido) AS operador,
+                        COUNT(A.reclamo_asignado) AS asignados,
+                        SUM(CASE WHEN E.nombre = 'Resuelto' THEN 1 ELSE 0 END) AS resueltos,
+                        AVG(CAST(DATEDIFF(DAY, R.fecha_creacion, R.fecha_cierre) AS FLOAT)) AS promedio
+                    FROM Usuario U
+                    INNER JOIN AsignacionReclamo A ON U.id_usuario = A.usuario_asignado
+                    INNER JOIN Reclamos R ON R.id_reclamo = A.reclamo_asignado
+                    INNER JOIN Estados E ON R.id_estado = E.id_estado
+                    GROUP BY U.nombre, U.apellido;", conn))
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     RendimientoOperadores.Clear();
@@ -213,12 +213,13 @@ namespace proyecto_tdp_2.MVVM.ViewModel
                             Nombre = reader.GetString(0),
                             Asignados = reader.GetInt32(1),
                             Resueltos = reader.GetInt32(2),
-                            PromedioDias = reader.IsDBNull(3) ? 0 : reader.GetInt32(3)
+                            PromedioDias = reader.IsDBNull(3) ? 0 : Math.Round(Convert.ToDouble(reader.GetValue(3)), 2)
                         });
                     }
                 }
             }
         }
+
 
         private byte[] RenderGraficoEstados()
         {

@@ -1,8 +1,11 @@
 ﻿using proyecto_tdp_2.Helpers;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace proyecto_tdp_2.MVVM.View
 {
@@ -31,6 +34,49 @@ namespace proyecto_tdp_2.MVVM.View
             Navigator.NavigateTo(new MisReclamosView());
         }
 
+        public void CargarImagenesReclamo(int idReclamo)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = "SELECT ruta_imagen FROM Imagenes WHERE id_reclamo = @id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", idReclamo);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var imagenes = new ObservableCollection<BitmapImage>();
+
+                        while (reader.Read())
+                        {
+                            string rutaRelativa = reader["ruta_imagen"].ToString();
+                            string rutaCompleta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, rutaRelativa);
+
+                            if (File.Exists(rutaCompleta))
+                            {
+                                BitmapImage img = new BitmapImage();
+                                img.BeginInit();
+                                img.UriSource = new Uri(rutaCompleta, UriKind.Absolute);
+                                img.CacheOption = BitmapCacheOption.OnLoad;
+                                img.EndInit();
+                                imagenes.Add(img);
+                            }
+                        }
+
+                        ImagenesPanel.ItemsSource = imagenes;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar imágenes: {ex.Message}");
+            }
+        }
+
+
         private void CargarReclamo(int idReclamo)
         {
             try
@@ -40,32 +86,32 @@ namespace proyecto_tdp_2.MVVM.View
                     conn.Open();
 
                     string query = @"
-                        SELECT r.id_reclamo, r.descripcion, r.fecha_creacion, 
-                               tr.nombre AS tipo, u.direccion AS ubicacion, 
-                               e.nombre AS estado, c.nombre + ' ' + c.apellido AS cliente, 
-                               c.email, c.telefono, p.nombre AS prioridad,
-                               he.fecha_cambio, he.comentario,
-                               us.nombre + ' ' + us.apellido AS usuario,
-                               ur.nombre + ' ' + ur.apellido AS usuario_responsable
-                        FROM Reclamos r
-                        INNER JOIN TipoReclamo tr ON r.tipo_reclamo = tr.id_tipo
-                        INNER JOIN Prioridades p ON r.prioridad = p.id_prioridad
-                        INNER JOIN Ubicacion u ON r.id_zona = u.id_zona
-                        INNER JOIN Estados e ON r.id_estado = e.id_estado
-                        INNER JOIN Clientes c ON r.cliente_reclamo = c.id_cliente
-                        LEFT JOIN (
-                            SELECT h1.id_reclamo, h1.fecha_cambio, h1.comentario, h1.id_operador
-                            FROM HistorialEstado h1
-                            WHERE h1.fecha_cambio = (
-                                SELECT MAX(h2.fecha_cambio)
-                                FROM HistorialEstado h2
-                                WHERE h2.id_reclamo = h1.id_reclamo
-                            )
-                        ) he ON r.id_reclamo = he.id_reclamo
-                        LEFT JOIN AsignacionReclamo ar ON r.id_reclamo = ar.reclamo_asignado
-                        LEFT JOIN Usuario ur ON ar.usuario_asignado = ur.id_usuario
-                        LEFT JOIN Usuario us ON he.id_operador = us.id_usuario
-                        WHERE r.id_reclamo = @id;";
+                SELECT r.id_reclamo, r.descripcion, r.fecha_creacion, 
+                       tr.nombre AS tipo, u.direccion AS ubicacion, 
+                       e.nombre AS estado, c.nombre + ' ' + c.apellido AS cliente, 
+                       c.email, c.telefono, p.nombre AS prioridad,
+                       he.fecha_cambio, he.comentario,
+                       us.nombre + ' ' + us.apellido AS usuario,
+                       ur.nombre + ' ' + ur.apellido AS usuario_responsable
+                FROM Reclamos r
+                INNER JOIN TipoReclamo tr ON r.tipo_reclamo = tr.id_tipo
+                INNER JOIN Prioridades p ON r.prioridad = p.id_prioridad
+                INNER JOIN Ubicacion u ON r.id_zona = u.id_zona
+                INNER JOIN Estados e ON r.id_estado = e.id_estado
+                INNER JOIN Clientes c ON r.cliente_reclamo = c.id_cliente
+                LEFT JOIN (
+                    SELECT h1.id_reclamo, h1.fecha_cambio, h1.comentario, h1.id_operador
+                    FROM HistorialEstado h1
+                    WHERE h1.fecha_cambio = (
+                        SELECT MAX(h2.fecha_cambio)
+                        FROM HistorialEstado h2
+                        WHERE h2.id_reclamo = h1.id_reclamo
+                    )
+                ) he ON r.id_reclamo = he.id_reclamo
+                LEFT JOIN AsignacionReclamo ar ON r.id_reclamo = ar.reclamo_asignado
+                LEFT JOIN Usuario ur ON ar.usuario_asignado = ur.id_usuario
+                LEFT JOIN Usuario us ON he.id_operador = us.id_usuario
+                WHERE r.id_reclamo = @id;";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -108,12 +154,15 @@ namespace proyecto_tdp_2.MVVM.View
                         }
                     }
                 }
+
+                CargarImagenesReclamo(idReclamo);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar los detalles del reclamo: {ex.Message}");
             }
         }
+
 
 
 

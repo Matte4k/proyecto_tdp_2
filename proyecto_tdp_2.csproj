@@ -23,6 +23,13 @@
     <None Remove="Images\logout.png" />
     <None Remove="Images\man.png" />
     <None Remove="Images\unable.png" />
+    <None Remove="Images\Users\user_7_gob-blanco.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Users\user_7_gob-blanco.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

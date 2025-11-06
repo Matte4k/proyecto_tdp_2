@@ -46,21 +46,25 @@ namespace proyecto_tdp_2.MVVM.View
                     connection.Open();
 
                     string query = @"
-                        SELECT u.id_usuario, 
-                               u.nombre, 
-                               u.apellido,
-                               r.nombre AS rol, 
-                               u.email, 
-                               u.telefono, 
-                               s.nombre AS servicio,
-                               p.id_provincia AS provincia, 
-                               u.dni,
-                               u.cuit
-                        FROM Usuario u
-                        INNER JOIN Roles r ON u.id_rol = r.id_rol
-                        INNER JOIN Servicios s ON u.id_servicio = s.id_servicio
-                        INNER JOIN Provincia p ON u.id_provincia = p.id_provincia
-                        WHERE u.email = @correo AND u.password = @pass";
+                            SELECT 
+                                u.id_usuario, 
+                                u.nombre, 
+                                u.apellido,
+                                r.nombre AS rol, 
+                                u.email, 
+                                u.telefono, 
+                                s.nombre AS servicio,
+                                p.id_provincia AS provincia, 
+                                u.dni,
+                                u.cuit,
+                                i.ruta_imagen
+                            FROM Usuario u
+                            INNER JOIN Roles r ON u.id_rol = r.id_rol
+                            INNER JOIN Servicios s ON u.id_servicio = s.id_servicio
+                            INNER JOIN Provincia p ON u.id_provincia = p.id_provincia
+                            LEFT JOIN Imagenes i ON u.id_usuario = i.id_usuario
+                            WHERE u.email = @correo AND u.password = @pass";
+
 
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
@@ -80,11 +84,14 @@ namespace proyecto_tdp_2.MVVM.View
                                 Session.Provincia = reader["provincia"]?.ToString() ?? string.Empty;
                                 Session.Dni = reader["dni"]?.ToString() ?? string.Empty;
                                 Session.Cuit = reader["cuit"]?.ToString() ?? string.Empty;
+                                Session.ImagenRuta = reader["ruta_imagen"]?.ToString() ?? string.Empty;
 
                                 MainView home = new MainView();
                                 home.Show();
                                 this.Close();
                             }
+
+
                             else
                             {
                                 MessageBox.Show("Correo o contraseña incorrectos.",

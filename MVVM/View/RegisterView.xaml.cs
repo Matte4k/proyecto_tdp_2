@@ -199,6 +199,8 @@ namespace proyecto_tdp_2.MVVM.View
                     return;
                 }
 
+
+
                 int nuevoIdUsuario = 0;
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -226,6 +228,37 @@ namespace proyecto_tdp_2.MVVM.View
 
                         nuevoIdUsuario = (int)command.ExecuteScalar();
                     }
+
+                    if (!string.IsNullOrEmpty(_avatarFilePath))
+                    {
+                        string projectRoot = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\.."));
+                        string imagesFolder = System.IO.Path.Combine(projectRoot, "Images", "Users");
+
+                        if (!System.IO.Directory.Exists(imagesFolder))
+                            System.IO.Directory.CreateDirectory(imagesFolder);
+
+                        string fileName = $"user_{nuevoIdUsuario}_{System.IO.Path.GetFileName(_avatarFilePath)}";
+                        string destPath = System.IO.Path.Combine(imagesFolder, fileName);
+
+                        System.IO.File.Copy(_avatarFilePath, destPath, true);
+
+                        string relativePath = System.IO.Path.Combine("Images", "Users", fileName);
+
+                        using (SqlConnection conn = new SqlConnection(connectionString))
+                        {
+                            conn.Open();
+                            string queryImg = @"INSERT INTO Imagenes (ruta_imagen, id_usuario)
+                            VALUES (@ruta, @idUsuario)";
+                            using (SqlCommand cmd = new SqlCommand(queryImg, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@ruta", relativePath); // Guardar ruta relativa
+                                cmd.Parameters.AddWithValue("@idUsuario", nuevoIdUsuario);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
+
 
                     if (idRol == 3)
                     {

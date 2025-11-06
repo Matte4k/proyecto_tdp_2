@@ -1,7 +1,10 @@
 ﻿using proyecto_tdp_2.Helpers;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 namespace proyecto_tdp_2.MVVM.View
 {
     public partial class MainView : Window
@@ -9,6 +12,7 @@ namespace proyecto_tdp_2.MVVM.View
         public MainView()
         {
             InitializeComponent();
+
 
             Navigator.OnNavigate += view =>
             {
@@ -27,7 +31,7 @@ namespace proyecto_tdp_2.MVVM.View
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbBackup.Visibility = Visibility.Collapsed;
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbReportes.Visibility = Visibility.Collapsed;
             if (Session.Rol != "Operador") rbAgregarReclamo.Visibility = Visibility.Collapsed;
-
+            CargarAvatar();
         }
         private void Nav_CrearReclamo(object sender, RoutedEventArgs e) { MainContent.Content = new ClaimView(); }
         private void Nav_MisReclamos(object sender, RoutedEventArgs e) { MainContent.Content = new MisReclamosView(); }
@@ -45,6 +49,48 @@ namespace proyecto_tdp_2.MVVM.View
                 catch (InvalidOperationException)
                 {
                 }
+            }
+        }
+
+        private void CargarAvatar()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Session.ImagenRuta))
+                {
+                    string fullPath = Session.ImagenRuta;
+
+                    if (!Path.IsPathRooted(fullPath))
+                    {
+                        string binPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fullPath);
+                        string projectPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\", fullPath));
+
+                        if (File.Exists(binPath))
+                            fullPath = binPath;
+                        else if (File.Exists(projectPath))
+                            fullPath = projectPath;
+                    }
+
+                    if (File.Exists(fullPath))
+                    {
+                        AvatarEllipse.Fill = new ImageBrush(new BitmapImage(new Uri(fullPath, UriKind.Absolute)))
+                        {
+                            Stretch = Stretch.UniformToFill
+                        };
+                        return;
+                    }
+                }
+
+                AvatarEllipse.Fill = new ImageBrush(
+                    new BitmapImage(new Uri("pack://application:,,,/Images/man.png"))
+                )
+                {
+                    Stretch = Stretch.UniformToFill
+                };
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar el avatar: " + ex.Message);
             }
         }
 

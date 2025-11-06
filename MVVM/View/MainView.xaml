@@ -112,7 +112,7 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                <Ellipse Width="50" Height="50">
+                                <Ellipse x:Name="AvatarEllipse" Width="50" Height="50">
                                     <Ellipse.Fill>
                                         <ImageBrush ImageSource="pack://application:,,,/Images/man.png" Stretch="UniformToFill" />
                                     </Ellipse.Fill>

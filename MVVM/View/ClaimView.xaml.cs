@@ -433,15 +433,16 @@ namespace proyecto_tdp_2.MVVM.View
                                 encoder.Save(stream);
                             }
 
-                            string relativePath = $"Images/claims/{fileName}";
+                            string relativePath = Path.Combine("Images", "claims", fileName).Replace("\\", "/");
 
                             string queryImagen = @"INSERT INTO Imagenes (ruta_imagen, id_reclamo)
-                                           VALUES (@ruta, @id_reclamo)";
+                           VALUES (@ruta, @id_reclamo)";
                             SqlCommand cmdImagen = new SqlCommand(queryImagen, conn, transaction);
                             cmdImagen.Parameters.AddWithValue("@ruta", relativePath);
                             cmdImagen.Parameters.AddWithValue("@id_reclamo", idReclamo);
                             cmdImagen.ExecuteNonQuery();
                         }
+
 
                         transaction.Commit();
                         MessageBox.Show($"✅ Reclamo #{idReclamo} creado y asignado correctamente a {Session.Nombre} {Session.Apellido}.");
