@@ -54,6 +54,14 @@
                                  Margin="10,5"
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
+                            <RadioButton
+                                 x:Name="rbUsuarios"
+                                 Content="Usuarios"
+                                 Height="40"
+                                 FontSize="14"
+                                 Margin="10,5"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Checked="RadioButton_Checked" />
                             <RadioButton Content="Perfil"
                                  Height="40"
                                  FontSize="14"
@@ -82,7 +90,7 @@
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
                             <RadioButton 
-                                x:Name="rbReportes"
+                                 x:Name="rbReportes"
                                  Content="Reportes"
                                  Height="40"
                                  FontSize="14"
@@ -104,6 +112,7 @@
                                  Margin="10,5"
                                  Style="{StaticResource MenuButtonTheme}"
                                  Checked="RadioButton_Checked" />
+                            
                         </StackPanel>
                         <Grid Grid.Row="2" Margin="10" VerticalAlignment="Bottom">
                             <Grid.ColumnDefinitions>

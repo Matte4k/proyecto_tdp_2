@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="proyecto_tdp_2.MVVM.View.UserManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Background="#F9FAFB">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Gestión de Usuarios"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   Foreground="#2B6CB0"
+                   Margin="0,0,0,25"/>
+
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="12"
+                Padding="30"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" Opacity="0.15" BlurRadius="8"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="Usuarios supervisados"
+                           FontWeight="Bold"
+                           FontSize="16"
+                           Foreground="#2B6CB0"
+                           Margin="0 0 0 10"/>
+
+                <ListView x:Name="UsuariosList"
+                          BorderThickness="0"
+                          Background="Transparent"
+                          Height="300"
+                          Margin="0,5,0,10"
+                          SelectionMode="Single">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="60"/>
+                            <GridViewColumn Header="Nombre" DisplayMemberBinding="{Binding Nombre}" Width="150"/>
+                            <GridViewColumn Header="Apellido" DisplayMemberBinding="{Binding Apellido}" Width="150"/>
+                            <GridViewColumn Header="Rol" DisplayMemberBinding="{Binding Rol}" Width="120"/>
+                            <GridViewColumn Header="Estado" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding EstadoTexto}" 
+                                                   Foreground="{Binding EstadoColor}" 
+                                                   FontWeight="Bold"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <TextBlock x:Name="txtCantidad"
+                           FontSize="14"
+                           Foreground="#4A5568"
+                           Margin="0,0,0,10"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="btnActivar"
+                            Content="Activar Usuario"
+                            Width="150"
+                            Margin="10,0"
+                            Click="BtnActivar_Click"/>
+
+                    <Button x:Name="btnDesactivar"
+                            Content="Dar de Baja"
+                            Width="150"
+                            Margin="10,0"
+                            Background="#E53E3E"
+                            Foreground="White"
+                            Click="BtnDesactivar_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

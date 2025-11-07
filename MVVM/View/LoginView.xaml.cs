@@ -45,33 +45,62 @@ namespace proyecto_tdp_2.MVVM.View
                 {
                     connection.Open();
 
-                    string query = @"
-                            SELECT 
-                                u.id_usuario, 
-                                u.nombre, 
-                                u.apellido,
-                                r.nombre AS rol, 
-                                u.email, 
-                                u.telefono, 
-                                s.nombre AS servicio,
-                                p.id_provincia AS provincia, 
-                                u.dni,
-                                u.cuit,
-                                i.ruta_imagen
-                            FROM Usuario u
-                            INNER JOIN Roles r ON u.id_rol = r.id_rol
-                            INNER JOIN Servicios s ON u.id_servicio = s.id_servicio
-                            INNER JOIN Provincia p ON u.id_provincia = p.id_provincia
-                            LEFT JOIN Imagenes i ON u.id_usuario = i.id_usuario
-                            WHERE u.email = @correo AND u.password = @pass";
+                    string queryExist = "SELECT estado FROM Usuario WHERE email = @correo AND password = @pass";
 
-
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    using (SqlCommand cmdExist = new SqlCommand(queryExist, connection))
                     {
-                        cmd.Parameters.AddWithValue("@correo", email);
-                        cmd.Parameters.AddWithValue("@pass", password);
+                        cmdExist.Parameters.AddWithValue("@correo", email);
+                        cmdExist.Parameters.AddWithValue("@pass", password);
 
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        object estadoObj = cmdExist.ExecuteScalar();
+
+                        if (estadoObj == null)
+                        {
+                            MessageBox.Show("Correo o contraseña incorrectos.",
+                                            "Error",
+                                            MessageBoxButton.OK,
+                                            MessageBoxImage.Error);
+                            return;
+                        }
+
+                        bool estado = (bool)estadoObj;
+
+                        if (!estado)
+                        {
+                            MessageBox.Show("El usuario está inactivo. Contacta con el administrador.",
+                                            "Usuario inactivo",
+                                            MessageBoxButton.OK,
+                                            MessageBoxImage.Warning);
+                            return;
+                        }
+                    }
+
+                    string queryUser = @"
+                    SELECT 
+                        u.id_usuario, 
+                        u.nombre, 
+                        u.apellido,
+                        r.nombre AS rol, 
+                        u.email, 
+                        u.telefono, 
+                        s.nombre AS servicio,
+                        p.id_provincia AS provincia, 
+                        u.dni,
+                        u.cuit,
+                        i.ruta_imagen
+                    FROM Usuario u
+                    INNER JOIN Roles r ON u.id_rol = r.id_rol
+                    INNER JOIN Servicios s ON u.id_servicio = s.id_servicio
+                    INNER JOIN Provincia p ON u.id_provincia = p.id_provincia
+                    LEFT JOIN Imagenes i ON u.id_usuario = i.id_usuario
+                    WHERE u.email = @correo AND u.password = @pass";
+
+                    using (SqlCommand cmdUser = new SqlCommand(queryUser, connection))
+                    {
+                        cmdUser.Parameters.AddWithValue("@correo", email);
+                        cmdUser.Parameters.AddWithValue("@pass", password);
+
+                        using (SqlDataReader reader = cmdUser.ExecuteReader())
                         {
                             if (reader.Read())
                             {
@@ -90,15 +119,6 @@ namespace proyecto_tdp_2.MVVM.View
                                 home.Show();
                                 this.Close();
                             }
-
-
-                            else
-                            {
-                                MessageBox.Show("Correo o contraseña incorrectos.",
-                                                "Error",
-                                                MessageBoxButton.OK,
-                                                MessageBoxImage.Error);
-                            }
                         }
                     }
                 }
@@ -114,6 +134,7 @@ namespace proyecto_tdp_2.MVVM.View
                                 MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
 
         private void tbMail_LostFocus(object sender, RoutedEventArgs e)

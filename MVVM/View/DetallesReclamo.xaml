@@ -150,13 +150,14 @@
                                 Margin="0,0,0,10"
                                 BorderThickness="0"
                                 Style="{StaticResource RoundedButtonStyle}" Click="CambiarEstado_Click" />
-                        <Button Content="Asignar Operador"
+                        <Button x:Name="btnAsignarOperador"
+                                Content="Asignar Operador"
                                 Background="#E0E0E0"
                                 Foreground="Gray"
                                 Height="40"
                                 BorderThickness="0"
                                 Margin="0,0,0,10"
-                                Style="{StaticResource RoundedButtonStyle}" />
+                                Style="{StaticResource RoundedButtonStyle}" Click="AsignarOperador_Click"/>
                         <Button Content="Añadir Nota"
                                 Background="#E0E0E0"
                                 Foreground="Gray"

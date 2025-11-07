@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="proyecto_tdp_2.MVVM.View.BackupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Background="#F9FAFB">
+
+    <UserControl.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#2B6CB0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2C5282"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CustomTextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="#CBD5E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EBF8FF"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#3182CE"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Respaldo de Base de Datos"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   Foreground="#2B6CB0"
+                   Margin="0,0,0,25"/>
+
+        <Border Grid.Row="1"
+        Background="White"
+        CornerRadius="12"
+        Padding="30"
+        BorderBrush="#E2E8F0"
+        BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" Opacity="0.15" BlurRadius="8"/>
+            </Border.Effect>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel HorizontalAlignment="Center" Width="720" Margin="12">
+
+                    <TextBlock Text="Seleccione la ubicación donde se guardará el respaldo:"
+                       FontSize="14"
+                       Foreground="#444"
+                       TextAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+                    <DockPanel LastChildFill="False" HorizontalAlignment="Center">
+                        <TextBox x:Name="txtRutaBackup"
+                         Width="400"
+                         IsReadOnly="True"
+                         Style="{StaticResource CustomTextBoxStyle}"
+                         VerticalAlignment="Center"/>
+                        <Button x:Name="btnExaminar"
+                        Content="Examinar..."
+                        Width="110"
+                        Margin="10,0,0,0"
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="BtnExaminar_Click"/>
+                    </DockPanel>
+
+                    <Button x:Name="btnBackup"
+                    Content="Generar Backup"
+                    Height="42"
+                    Margin="0,15,0,10"
+                    Width="220"
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource MenuButtonStyle}"
+                    Click="BtnBackup_Click"/>
+
+                    <TextBlock x:Name="txtResultado"
+                       Text=""
+                       FontSize="13"
+                       Foreground="#2C5282"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Visibility="Collapsed"
+                       Margin="0,10,0,20"/>
+
+                    <Border Margin="10,10,10,0"
+                    Padding="15"
+                    CornerRadius="10"
+                    Background="#F8FAFC"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1">
+
+                        <StackPanel>
+                            <TextBlock Text="Historial de Backups"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#2B6CB0"
+                               Margin="0 0 0 10"/>
+
+                            <ListView x:Name="BackupsList"
+                              BorderThickness="0"
+                              Background="Transparent"
+                              Margin="0,5,0,10"
+                              SelectionMode="Single"
+                              Height="200">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Archivo" DisplayMemberBinding="{Binding Nombre}" />
+                                        <GridViewColumn Header="Fecha de creación" DisplayMemberBinding="{Binding Fecha}"/>
+                                        <GridViewColumn Header="Ruta completa" DisplayMemberBinding="{Binding Ruta}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                <Button Content="Restaurar Backup"
+                                Style="{StaticResource MenuButtonStyle}"
+                                Width="150"
+                                Margin="0,0,10,0"
+                                Click="BtnRestaurar_Click"/>
+                                <Button Content="Eliminar Backup"
+                                Style="{StaticResource MenuButtonStyle}"
+                                Width="150"
+                                Padding="10"
+                                Margin="0,0,10,0"
+                                Background="#E53E3E"
+                                Click="BtnEliminar_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

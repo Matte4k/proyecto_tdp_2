@@ -30,6 +30,7 @@ namespace proyecto_tdp_2.MVVM.View
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbAgregarTipoReclamo.Visibility = Visibility.Collapsed;
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbBackup.Visibility = Visibility.Collapsed;
             if (Session.Rol != "SuperAdmin" && Session.Rol != "Supervisor") rbReportes.Visibility = Visibility.Collapsed;
+            if (Session.Rol == "Operador") rbUsuarios.Visibility = Visibility.Collapsed;
             if (Session.Rol != "Operador") rbAgregarReclamo.Visibility = Visibility.Collapsed;
             CargarAvatar();
         }
@@ -142,6 +143,14 @@ namespace proyecto_tdp_2.MVVM.View
 
                     case "Reportes":
                         MainContent.Content = new ReportesView();
+                        break;
+
+                    case "Backup":
+                        MainContent.Content = new BackupView();
+                        break;
+
+                    case "Usuarios":
+                        MainContent.Content = new UserManagementView(Session.UserId, Session.Rol);
                         break;
 
                     case "Cerrar Sesión":
