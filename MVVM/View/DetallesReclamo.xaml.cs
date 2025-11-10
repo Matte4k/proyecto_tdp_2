@@ -5,12 +5,19 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace proyecto_tdp_2.MVVM.View
 {
+    public class Operador
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+    }
     public partial class DetalleReclamo : UserControl
     {
+
 
         public string NombreUsuario { get; set; } = string.Empty;
         public string RolUsuario { get; set; } = string.Empty;
@@ -21,13 +28,26 @@ namespace proyecto_tdp_2.MVVM.View
             InitializeComponent();
 
             Loaded += DetalleReclamo_Loaded;
+
+            if (Session.Rol == "SuperAdmin" || Session.Rol == "Supervisor")
+            {
+                btnAsignarOperador.IsEnabled = true;
+                btnAsignarOperador.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0066FF"));
+                btnAsignarOperador.Foreground = Brushes.White;
+            }
+            else
+            {
+                btnAsignarOperador.IsEnabled = false;
+                btnAsignarOperador.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0E0E0"));
+                btnAsignarOperador.Foreground = Brushes.Gray;
+            }
         }
+
 
         private void DetalleReclamo_Loaded(object sender, RoutedEventArgs e)
         {
             if (Tag is int idReclamo)
                 CargarReclamo(idReclamo);
-            btnAsignarOperador.IsEnabled = RolUsuario == "SuperAdmin" || RolUsuario == "Supervisor";
         }
 
         private void BtnVolver_Click(object sender, RoutedEventArgs e)
@@ -164,11 +184,6 @@ namespace proyecto_tdp_2.MVVM.View
             }
         }
 
-
-
-
-
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Navigator.NavigateTo(new MisReclamosView());
@@ -201,15 +216,20 @@ namespace proyecto_tdp_2.MVVM.View
                 MessageBox.Show("ID de reclamo no válido.");
                 return;
             }
-            int idSupervisor = Session.UserId;
-            var asignarOperadorView = new AsignarOperadorViewe(idReclamo, RolUsuario, idSupervisor);
+
+            int idOperador = Session.UserId;
+            string rolUsuario = Session.Rol;
+
+            var asignarOperadorView = new AsignarOperadorView(idReclamo, rolUsuario, idOperador);
             bool? resultado = asignarOperadorView.ShowDialog();
+
             if (resultado == true)
             {
                 CargarReclamo(idReclamo);
                 MessageBox.Show("El operador se asignó correctamente.");
             }
         }
+
 
     }
 }

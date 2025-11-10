@@ -1,9 +1,9 @@
-﻿<Window x:Class="proyecto_tdp_2.MVVM.View.AsignarOperadorViewe"
+﻿<Window x:Class="proyecto_tdp_2.MVVM.View.AsignarOperadorView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-xmlns:local="clr-namespace:proyecto_tdp_2.MVVM.View"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:local="clr-namespace:proyecto_tdp_2.MVVM.View"
     Title="MiReclamo - Asignar Operador"
     Height="700"
     Width="600"
@@ -35,7 +35,7 @@ xmlns:local="clr-namespace:proyecto_tdp_2.MVVM.View"
                         Foreground="Red"
                         BorderThickness="0"
                         FontWeight="Bold"
-                        Click="BtnAsignar_Click" />
+                        Click="BtnExit_Click" />
                 </StackPanel>
             </DockPanel>
 
@@ -52,7 +52,7 @@ xmlns:local="clr-namespace:proyecto_tdp_2.MVVM.View"
                 <StackPanel Margin="0,10">
                     <TextBlock Text="Seleccionar Operador"
                            FontWeight="Bold" HorizontalAlignment="Center"/>
-                    <ComboBox x:Name="comboOperadores" Margin="0,10,0,20"/>
+                    <ComboBox x:Name="comboOperadores" Margin="0,10,0,20" Foreground="Black"/>
                     <Button Content="Asignar"
                         Width="120"
                         Height="35"
