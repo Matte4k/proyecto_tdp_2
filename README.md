@@ -137,4 +137,3 @@ proyecto_tdp_2/
 ## Licencia
 
 Este proyecto es de uso académico y/o empresarial interno.  
-Distribución restringida sin autorización del autor.
