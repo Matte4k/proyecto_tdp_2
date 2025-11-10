@@ -131,7 +131,6 @@ proyecto_tdp_2/
 
 - **Benjamin Delfor Sánchez Morales**
 - **Mateo Nicolás Gálvez Díaz Colodrero**
-- Colaboradores y testers internos
 
 ---
 
